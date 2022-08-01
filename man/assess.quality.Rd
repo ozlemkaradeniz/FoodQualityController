@@ -4,29 +4,10 @@
 \alias{assess.quality}
 \title{assess.quality}
 \usage{
-assess.quality(
-  platformList,
-  mlmList,
-  fileList,
-  numberOfIterations = 100,
-  pretreatment = "no_pretreatment",
-  percentageForTrainingSet = 0.7
-)
+assess.quality(configFile = configFile)
 }
 \arguments{
-\item{platformList}{platformList}
-
-\item{mlmList}{mlmList}
-
-\item{fileList}{fileList}
-
-\item{numberOfIterations}{numberOfIterations}
-
-\item{pretreatment}{pretreatment}
-
-\item{percentageForTrainingSet}{percentageForTrainingSet}
-
-\item{fileTabList}{fileTabList}
+\item{configFile}{configFile}
 }
 \value{
 
@@ -35,8 +16,7 @@ assess.quality(
 assess.quality
 }
 \examples{
-\dontrun{assess.quality(platformList, mlmList, fileList, numberOfIterations, pretreatment, percentageForTrainingSet
-)}
+\dontrun{assess.quality(configFile)}
 }
 \author{
 Ozlem Karadeniz \email{ozlem.karadeniz.283@cranfield.ac.uk}

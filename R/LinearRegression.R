@@ -21,7 +21,6 @@
 #' each iteration
 #' RSquare: mean RSquare of all iterations
 #' @import caret foreach
-#' @export
 #'
 #' @examples
 #' \dontrun{linearRegression.run(regressionParameterList)}

@@ -23,7 +23,6 @@
 #' RSquare: mean RSquare of all iterations
 #' bestHyperParamsList: a list containing best alpha and lambda values for each iteration
 #' @import caret glmnet foreach
-#' @export
 #'
 #' @examples
 #' \dontrun{regularizedRegression.run(regressionParameterList)}

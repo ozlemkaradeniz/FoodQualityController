@@ -1,3 +1,16 @@
+#' generateStatistics
+#' @description generates RMSE and RSQUARE statistics report for each platform
+#' and machine learning models
+#' @author Ozlem Karadeniz \email{ozlem.karadeniz.283@@cranfield.ac.uk}
+#' @param platformPerformanceResults list of machine learning performance results
+#' for each paltofrm
+#' @param outputDir output directory name provided by the use in config json file
+#' @param createStatisticsFile boolean value indicating whether to create statistics
+#' file or not
+#'
+#' @examples
+#' \dontrun{generateStatistics(platformPerformanceResults, outputDir, createStatisticsFile)}
+#'
 generateStatistics <- function(platformPerformanceResults, outputDir, createStatisticsFile){
 
         mlmLongDesc = list("NN" = "Neural Network", "SVM-Radial" = "SVM-Radial", "SVM-Polynomial" = "SVM-Polynomial",
@@ -42,13 +55,9 @@ generateStatistics <- function(platformPerformanceResults, outputDir, createStat
 
         if(createStatisticsFile == TRUE){
                 dir.create(path = outputDir, showWarnings = FALSE)
-                RMSEFile <- paste0(outputDir, "/Statistics.csv")
+                RMSEFile <- paste0(outputDir, "/RMSE_Statistics.csv")
                 write.csv(Rmsedf, file = RMSEFile)
-                RSquareFile <- paste0(outputDir, "/Statistics.csv")
-                write.csv(RSquaredf, file = RMSEFile, append = TRUE)
+                RSquareFile <- paste0(outputDir, "/RSquare_Statistics.csv")
+                write.csv(RSquaredf, file = RSquareFile)
         }
-
-
-
-
 }

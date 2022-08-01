@@ -1,5 +1,16 @@
+#' generatePerformancePlot
+#' @description generates performance plot for each analytical platform
+#' @author Ozlem Karadeniz \email{ozlem.karadeniz.283@@cranfield.ac.uk}
+#' @param data cumulative performance metrics results
+#' @param plotName RMSE Means OR rsquare Means
+#' @param dataNames machine learning model names
+#' @param file output pdf file name
+#' @import colorRamps
+#'
+#' @examples
+#' \dontrun{generatePerformancePlot(data, plotName, dataNames, file)}
+
 generatePerformancePlot <- function(data, plotName, dataNames, file) {
-        require(colorRamps)
 
         # generate different colors for every data entry
 
@@ -30,6 +41,16 @@ generatePerformancePlot <- function(data, plotName, dataNames, file) {
 }
 
 
+#' generatePerformancePlots
+#' @description generates performance plots for each platform. Plots show
+#' RMSE and RSquare change in different number of iterations
+#' @author Ozlem Karadeniz \email{ozlem.karadeniz.283@@cranfield.ac.uk}
+#' @param platformPerformanceResults
+#' @param outputDir
+#'
+#' @examples
+#' \dontrun{generatePerformancePlot(data, plotName, dataNames, file)}
+
 generatePerformancePlots <- function(platformPerformanceResults, outputDir){
 
         if(file.exists(outputDir) == FALSE)
@@ -40,9 +61,6 @@ generatePerformancePlots <- function(platformPerformanceResults, outputDir){
 
         # for each platform different folder is created
         for(platformPerformanceResult in platformPerformanceResults) {
-
-                outputDir = paste0(outputDir, "/", platformPerformanceResult$platform)
-                dir.create(path = outputDir, showWarnings = FALSE)
 
                 mergedCumulativeRMSEList<-NULL
                 mergedCumulativeRSquareList <- NULL
@@ -64,7 +82,7 @@ generatePerformancePlots <- function(platformPerformanceResults, outputDir){
 
                 if(generatePlot == TRUE){
 
-                        cat("Creating performance plots for ", platformPerformanceResult$platform, " length ", length(platformPerformanceResult$mlmPerformanceResults) , "\n"  )
+                        cat("Creating performance plots for ", platformPerformanceResult$platform,"\n"  )
 
                         mergedCumulativeRSquareList[is.na(mergedCumulativeRSquareList)] = 0
                         mergedCumulativeRMSEList[is.na(mergedCumulativeRMSEList)] = 0
@@ -73,12 +91,13 @@ generatePerformancePlots <- function(platformPerformanceResults, outputDir){
 
                         generatePerformancePlot(data = mergedCumulativeRMSEList*100, plotName = "RMSE Means",
                                                 dataNames = mlmList,
-                                                file = paste(outputDir, "/RMSE_Means.pdf", sep = ""))
+                                                file = paste(outputDir, "/", platformPerformanceResult$platform, "_RMSE_Means.pdf", sep = ""))
 
 
                         generatePerformancePlot(data = mergedCumulativeRSquareList*100, plotName = "RSquare Means",
                                                 dataNames = mlmList,
-                                                file = paste(outputDir, "/RSquare_Means.pdf", sep = ""))
+                                                file = paste(outputDir, "/", platformPerformanceResult$platform, "RSquare_Means.pdf", sep = ""))
+
                 }
         }
 

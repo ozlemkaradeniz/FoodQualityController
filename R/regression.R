@@ -1,14 +1,26 @@
-library(xlsx)
-library(foreach)
+#' run.analysis
+#' @description calls each machine learning run methods according to
+#' the method parameter in regressionParameterList
+#' @author Ozlem Karadeniz \email{ozlem.karadeniz.283@@cranfield.ac.uk}
+#' @param configParams  list containing parameters provided in config json file
+#' by the user
+#' @import foreach
+#'
+#' @examples
+#' \dontrun{run.analysis(configParams)}
 
-run.analysis <- function (fileList, platformList, mlmList,  outputDir, createStatisticsFile,
-                          createPerformancePlots, createPCAPlots){
+run.analysis <- function(configParams){
+
+        fileList <- configParams$platformList$dataFileName
+        platformList <- configParams$platformList$platformName
+        mlmList <- configParams$machineLearningModels
 
         cat("########################\n#### START ANALYSIS ####\n########################\n\n")
 
         platformPerformanceResults <- vector(mode="list", length = length(platformList))
 
-        platformPerformanceResults <- foreach(i=seq(1:length(platformList))) %dopar% {
+       # platformPerformanceResults <- foreach(i=seq(1:length(platformList))) %dopar% {
+        for(i in 1:length(platformList)) {
                 dataSet = readDataset(fileList[i])
                 bestRMSE <- 100000
                 bestRSquare<-0
@@ -36,22 +48,34 @@ run.analysis <- function (fileList, platformList, mlmList,  outputDir, createSta
                         mlmPerformanceResults[[j]]  <- mlmPerformanceResult
                 }
 
+                if(configParams$createPCAPlots == TRUE)
+                        generatePCAPlots(dataSet, configParams$outputDirectory, platformList[i])
+
                 cat("For ", platformList[i], " best model is ", bestMLM , " with RMSE: " , bestRMSE,  " and R-squared: ", bestRSquare, "\n")
                 platformPerformanceResults[[i]] <- list("platform" = platformList[i], "bestMLM" = bestMLM, "bestRMSE" = bestRMSE, "bestRSquare" = bestRSquare,
                                                         "mlmPerformanceResults" = mlmPerformanceResults )
 
         }
 
-        generateStatistics(platformPerformanceResults, outputDir, createStatisticsFile)
+        generateStatistics(platformPerformanceResults, configParams$outputDirectory, configParams$createStatisticsFile)
 
-        if(createPerformancePlots)
-                generatePerformancePlots(platformPerformanceResults, outputDir)
+        if(configParams$createPerformancePlots)
+                generatePerformancePlots(platformPerformanceResults, configParams$outputDirectory)
 
-        #generatePCAPlots()
 
 }
 
-
+#' run.regression
+#' @description calls each machine learning run methods according to
+#' the method parameter in regressionParameterList
+#' @author Ozlem Karadeniz \email{ozlem.karadeniz.283@@cranfield.ac.uk}
+#' @param regressionParameterList  list containing parameters needed by machine
+#' learning models to run
+#'
+#' @return a list which contains performance results for machine learning
+#' model
+#' @examples
+#' \dontrun{run.regression(regressionParameterList)}
 
 run.regression <- function(regressionParameterList){
         method<-regressionParameterList$method
@@ -74,10 +98,6 @@ run.regression <- function(regressionParameterList){
                 cat('knn.run is starting \n')
                 result<-knn.run(regressionParameterList)
         }
-        # if(method == "RFR(MLR)"){
-        #         cat('run.rfr.1 is starting \n')
-        #         result<-run.rfr.1(dataset)
-        # }
         if(method == "RFR"){
                 cat('randomForest.run is starting \n')
                 result<-randomForest.run(regressionParameterList)
@@ -123,57 +143,30 @@ run.regression <- function(regressionParameterList){
         return(result)
 
 }
-# #!/usr/bin/env Rscript
 
 
 #' assess.quality
 #' @description assess.quality
 #' @author Ozlem Karadeniz \email{ozlem.karadeniz.283@@cranfield.ac.uk}
-#' @param platformList  platformList
-#' @param mlmList mlmList
-#' @param fileList fileList
-#' @param fileTabList fileTabList
-#' @param numberOfIterations numberOfIterations
-#' @param pretreatment pretreatment
-#' @param percentageForTrainingSet percentageForTrainingSet
+#' @param configFile  configFile
+#' @import caret doParallel
 #' @return
 #' @export
 #'
 #' @examples
-#' \dontrun{assess.quality(platformList, mlmList, fileList, numberOfIterations, pretreatment, percentageForTrainingSet
-#' )}
+#' \dontrun{assess.quality(configFile)}
 
-assess.quality <- function(platformList, dataFileList, mlmConfigFile=NULL, mlmParams=NULL,
-                           outputDir = NULL, createStatisticsFile = TRUE, createPerformancePlots = TRUE, createPCAPlots = TRUE){
+assess.quality <- function(configFile=configFile){
 
-        require(caret)
+        # config file should be provided by the use
+        if(is.null(configFile))
+           stop("ERROR configuration file should be defined!")
 
-        library(doParallel)
+        configParams = readConfigFile(configFile)
 
-        if(is.null(mlmConfigFile) && is.null(mlmParams))
-           stop("mlmConfigFile or mlmParams should be defined!")
+        registerDoParallel(cores=4)
 
-
-        if(!is.null(outputDir) && !file.exists(outputDir))
-                stop("Output directory does not exist")
-
-        if(is.null(outputDir))
-                outputDir = getwd()
-
-
-        outputDir = paste0(outputDir, "/BeefQualityAssessment-", Sys.time())
-
-        platformList = strsplit(platformList, ",")[[1]]
-
-        fileList = strsplit(dataFileList, ",")[[1]]
-
-        if(!is.null(mlmParams))
-                mlmList = strsplit(mlmParams, ",")[[1]]
-        else
-                mlmList = readMlmConfigFile(mlmConfigFile)
-
-        run.analysis(fileList, platformList, mlmList, outputDir, createStatisticsFile,
-                     createPerformancePlots, createPCAPlots)
+        run.analysis(configParams)
 }
 
 

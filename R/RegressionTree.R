@@ -11,7 +11,6 @@
 #' RSquare: RSquare value of the best pruned tree
 #' bestCp: cost comlexity of the best pruned tree
 #' @import rpart
-#' @export
 #'
 #' @examples
 #' \dontrun{pruneTree(modelTree, testSet )}
@@ -65,7 +64,6 @@ pruneTree <-function(modelTree, testSet) {
 #' each iteration
 #' RSquare: mean RSquare of all iterations
 #' @import rpart foreach
-#' @export
 #'
 #' @examples
 #' \dontrun{regressionTree.run(regressionParameterList)}

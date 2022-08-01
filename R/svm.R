@@ -22,7 +22,6 @@
 #' RSquare: mean RSquare of all iterations
 #' bestHyperParamsList: a list containing best cost, gamma and epsilon values
 #' @import caret foreach e1071
-#' @export
 #'
 #' @examples
 #' \dontrun{svm.run(regressionParameterList)}

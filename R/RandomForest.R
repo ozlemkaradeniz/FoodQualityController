@@ -21,7 +21,6 @@
 #' RSquare: mean RSquare of all iterations
 #' bestHyperParamsList: a list containing best mtry value and default number of trees
 #' @import randomForest caret foreach
-#' @export
 #'
 #' @examples
 #' \dontrun{randomForest.run(regressionParameterList)}

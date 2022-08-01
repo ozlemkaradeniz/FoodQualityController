@@ -22,7 +22,6 @@
 #' RSquare: mean RSquare of all iterations
 #' bestHyperParamsList: a list containing best alpha and lambda values for each iteration
 #' @import caret foreach
-#' @export
 #'
 #' @examples
 #' \dontrun{elasticRegression.run(regressionParameterList)}

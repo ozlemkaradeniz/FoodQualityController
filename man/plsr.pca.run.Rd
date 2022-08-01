@@ -20,7 +20,7 @@ dataSet: dataFrame which is read from data file and subjected to the model.}
 a list containing performance results
 RMSEList: a list which contains RMSE of each iteration
 cumulativeRMSEList: a list which contains cumulative RMSE mean in
-each iteration#' @import caret pls
+each iteration#'
 RMSE: mean RMSE of all iterations
 RSquareList: a list which contains RSquare of each iteration
 cumulativeRSquareList : a list which contains cumulative RSquare mean in

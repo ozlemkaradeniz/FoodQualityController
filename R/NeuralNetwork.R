@@ -12,7 +12,6 @@
 #' RMSE: mean RMSE of all iterations
 #' RSquare: mean RSquare of all iterations
 #' @import caret neuralnet
-#' @export
 #'
 #' @examples
 #' \dontrun{neuralNetwork.run(regressionParameterList)}

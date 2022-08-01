@@ -22,7 +22,6 @@
 #' RSquare: mean RSquare of all iterations
 #' bestHyperParamsList: a list containing best k-value for each iteration
 #' @import caret
-#' @export
 #'
 #' @examples
 #' \dontrun{knn.run(regressionParameterList)}
