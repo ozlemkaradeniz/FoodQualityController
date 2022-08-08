@@ -30,6 +30,7 @@ randomForest.run <- function(regressionParameterList){
 
         dataSet<-regressionParameterList$dataSet
         set.seed(1821)
+        # Partition data into training and test set
         trainIndexList <- createDataPartition(dataSet$TVC, p = regressionParameterList$percentageForTrainingSet,
                                               list = FALSE, times = regressionParameterList$numberOfIterations)
 
@@ -43,6 +44,7 @@ randomForest.run <- function(regressionParameterList){
 
         # do things in parallel
         modelList <- foreach(i=seq(1:regressionParameterList$numberOfIterations), .inorder=FALSE) %dopar% {
+                # training set and test set are created
                 trainSet <- dataSet[trainIndexList[,i],]
                 trainSet_y<-trainSet[,names(trainSet)=="TVC"]
                 trainSet_x<-trainSet[,names(trainSet)!="TVC"]
@@ -50,28 +52,39 @@ randomForest.run <- function(regressionParameterList){
                 testSet_y<-testSet[,names(testSet)=="TVC"]
                 testSet_x<-testSet[,names(testSet)!="TVC"]
 
+                # Starting with the default value of mtry, search for the optimal value (with respect to Out-of-Bag error estimate) of mtry for randomForest.
                 tuningResult <- tuneRF(trainSet_x, trainSet_y, , ntreeTry=1000, stepFactor=1.1, improve=0.0000001,
                                           trace=TRUE, plot=TRUE, doBest=TRUE)
 
+                # list of bestHyperParams is created with best hyperparameters
                 bestHyperParams <- list("mtry"=tuningResult$mtry,"ntree"=tuningResult$ntree)
+                # Tuning is called for each iteration seperately as the dataset differs in each iteration
+                # List of hyperparameters for each iteration is created
                 bestHyperParamsList <- c(bestHyperParamsList, bestHyperParams)
 
+                # RandomForest model is created with the best hyperparameters for the current iteration
                 modelFit <- randomForest(x = trainSet_x, y = trainSet_y, xtest = testSet_x, ytest = testSet_y,
                                          ntree = bestHyperParams$ntree, mtry = bestHyperParams$mtry)
 
+                # Using testSet svm model predicts TVC values
                 predictedValues <- modelFit$test$predicted
 
+                # Performance metrics (RMSE and RSquare) are calculated by comparing the predicted and actual values
                 RMSE<- RMSE(testSet$TVC, predictedValues)
                 RSquare <- RSQUARE(testSet$TVC, predictedValues)
 
+                # RandomForest model with the performance metrics for the current iteration is appended to the RandomForest model list
+                # RandomForest model list contains all RandomForest models for all iterations
                 modelList[[i]] <- list("model" = modelFit, "RMSE" = RMSE, "RSquare" = RSquare)
         }
 
+        # RMSEList contains list of RMSE for each iteration
         RMSEList <- unlist(lapply(modelList, function(x) x$RMSE))
         meanRMSE <- round(mean(RMSEList), 4)
         cumulativeMeanRMSEList <- cumsum(RMSEList) / seq_along(RMSEList)
         names(cumulativeMeanRMSEList) <- seq_along(RMSEList)
 
+        # RSquareList contains list of RSquare for each iteration
         RSquareList <- unlist(lapply(modelList, function(x) x$RSquare))
         meanRSquare <- round(mean(RSquareList), 4)
         cumulativeMeanRSquareList <- cumsum(RSquareList) / seq_along(RSquareList)
@@ -79,6 +92,8 @@ randomForest.run <- function(regressionParameterList){
 
         cat('Random Forest mean RMSE: ', meanRMSE, '\n')
         cat('Random Forest mean RSquare: ', meanRSquare, '\n')
+
+        # Result object is returned to run.regression function in regression.R, which contains whole performance information for the machine learning model
         result <- list("RMSEList"= RMSEList, "cumulativeMeanRMSEList" = cumulativeMeanRMSEList, "RMSE" = meanRMSE,
                        "RSquareList" = RSquareList, "cumulativeMeanRSquareList" = cumulativeMeanRSquareList, "RSquare" = meanRSquare,
                        "bestHyperParamsList" = bestHyperParamsList, method = regressionParameterList$method, platform = regressionParameterList$platform)

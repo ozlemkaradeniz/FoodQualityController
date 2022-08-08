@@ -10,13 +10,13 @@
 #' \dontrun{run.analysis(configParams)}
 
 run.analysis <- function(configParams){
-
         fileList <- configParams$platformList$dataFileName
         platformList <- configParams$platformList$platformName
         mlmList <- configParams$machineLearningModels
 
         cat("########################\n#### START ANALYSIS ####\n########################\n\n")
 
+        # initialization of platformPerformanceResults
         platformPerformanceResults <- vector(mode="list", length = length(platformList))
 
        # platformPerformanceResults <- foreach(i=seq(1:length(platformList))) %dopar% {
@@ -28,37 +28,49 @@ run.analysis <- function(configParams){
 
                 mlmPerformanceResults <- vector(mode="list", length = length(mlmList))
 
+                # for each platforms and machine learning models following code is executed
                 for(j in 1:length(mlmList)) {
                         mlm <-mlmList[j]
 
+                        # RegressionParameterList is creates as list object which carries necessary parameters for machine learning
+                        # models to run.
+                        # elements of RegressionParameterList are set to default values if they are not supplied by the user.
+                        # default values are defined in utils.R
                         regressionParameterList <- getRegressionParameters(mlm,dataSet, platformList[i] )
                         dataSet<-regressionParameterList$dataSet
-                        regressionParameterList<-within(regressionParameterList, rm(dataSet))
-                        print(regressionParameterList)
-                        regressionParameterList$dataSet<-dataSet
 
+                        # according to method parameter of regressionParameterList different machine learning model is exccuted in  run.regression
                         mlmPerformanceResult <- run.regression(regressionParameterList)
 
+                        # Through the loop best machine learning model is found according to RMSE performance metric
                         if(mlmPerformanceResult$RMSE < bestRMSE){
                              bestRSquare <- mlmPerformanceResult$RSquare
                              bestRMSE <- mlmPerformanceResult$RMSE
                              bestMLM <- mlmPerformanceResult$method
                         }
-                       # statisticsListForMML <- c(statisticsListForMML, paste0("RMSE: " ,  round(mmlPerformanceResult$RMSE, digit = 3) , "||R-squared: ", round(mmlPerformanceResult$RSquare, digit = 3)))
+                        # machine learning model list updated
+                        # each platform has got different mlmPerformanceResults list
                         mlmPerformanceResults[[j]]  <- mlmPerformanceResult
                 }
 
                 if(configParams$createPCAPlots == TRUE)
                         generatePCAPlots(dataSet, configParams$outputDirectory, platformList[i])
 
+                # Best machine learning model for the platform is printed
                 cat("For ", platformList[i], " best model is ", bestMLM , " with RMSE: " , bestRMSE,  " and R-squared: ", bestRSquare, "\n")
+
+                # each item in platformPerformanceResults corresponds to one platform,
+                # Associated mlmPerformanceResults(performance results of machine learning model list), bestMLM, bestRMSE, bestRSquare which have been
+                # created with the previous loop are appended to platformPerformanceResults list.
                 platformPerformanceResults[[i]] <- list("platform" = platformList[i], "bestMLM" = bestMLM, "bestRMSE" = bestRMSE, "bestRSquare" = bestRSquare,
                                                         "mlmPerformanceResults" = mlmPerformanceResults )
 
         }
 
+        # RSquare_Statistics.csv and RMSE_Statistics.csv files are created if createStatisticsFile parameter is set as TRUE in config file
         generateStatistics(platformPerformanceResults, configParams$outputDirectory, configParams$createStatisticsFile)
 
+        # Performance plots which shows RSquare and  RMSE means through number of iterations are created for each platform
         if(configParams$createPerformancePlots)
                 generatePerformancePlots(platformPerformanceResults, configParams$outputDirectory)
 
@@ -162,8 +174,14 @@ assess.quality <- function(configFile=configFile){
         if(is.null(configFile))
            stop("ERROR configuration file should be defined!")
 
+        # config file which contains user-defined parameters for the application is parsed.
+        # After parsing, configParams object is created as a list of following elements
+        # platform list, machine learning models and their parameters, output directory, createStatisticsFile,
+        # createPerformancePlots, createPCAPlots
+
         configParams = readConfigFile(configFile)
 
+        # in run.analysis foreach method is called as parallel
         registerDoParallel(cores=4)
 
         run.analysis(configParams)

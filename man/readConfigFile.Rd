@@ -10,8 +10,8 @@ readConfigFile(configFile)
 \item{configFile}{configFile}
 }
 \value{
-list of config object containing machineLearningModels, outputDirectory
-platformList read from configFile
+list of config object containing machineLearningModels, outputDirectory,
+createStatisticsFile, createPerformancePlots, createPCAPlots
 }
 \description{
 reads, parses and performs some validity checks on the configuration data
