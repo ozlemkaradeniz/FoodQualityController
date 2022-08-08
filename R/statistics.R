@@ -22,7 +22,7 @@ generateStatistics <- function(platformPerformanceResults, outputDir, createStat
 
         cat("########################\n####  ML PERFORMANCE RESULT####\n########################\n\n")
 
-        mlmShortNameList <- unlist(lapply(platformPerformanceResults[1]$mlmPerformanceResults, function(x) x$method))
+        mlmShortNameList <- unlist(lapply(platformPerformanceResults[[1]]$mlmPerformanceResults, function(x) x$method))
         mlmLongDescList <- unlist(mlmLongDesc[mlmShortNameList])
         platformList <- unlist(lapply(platformPerformanceResults, function(x) x$platform))
         Rmsedf<-data.frame()

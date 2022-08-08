@@ -14,7 +14,7 @@ generatePerformancePlot <- function(data, plotName, dataNames, file) {
 
         # generate different colors for every data entry
 
-        colors <- primary.colors(nrow(data), steps = 3, no.white = TRUE)
+        colors <- primary.colors(nrow(data) + 1, steps = 3, no.white = TRUE)[-1]
 
         # create pdf file
         pdf(file)
@@ -25,16 +25,16 @@ generatePerformancePlot <- function(data, plotName, dataNames, file) {
         yAxisPreset <- c(min(data), max(data))
         plot(xAxisPreset, yAxisPreset, xlab = "Iterations",
              ylab = "Score", main = plotName, type = "n")
-        # add steps to axis
-        #axisStep <- (max(data) - min(data)) / 10
-        #axis(side=2, at=seq(min(data), max(data), by = axisStep))
+
 
         for(i in 1:nrow(data)) {
-                lines(1:ncol(data), data[i,], col = colors[i])
+                x<-data[i,]
+                n <- length(x[x!=0])
+                lines(1:n, data[i, 1:n], col = colors[i])
         }
 
         # generate legend for plot
-        legend("topright", inset=c(-0.42,0), dataNames, lty=c(1), col=colors, cex = 0.8)
+       legend("left", inset=c(1.02 , 1.1 ), dataNames, lty=c(1), col=colors, cex = 0.8)
 
         # close file
         dev.off()
@@ -87,7 +87,11 @@ generatePerformancePlots <- function(platformPerformanceResults, outputDir){
                         mergedCumulativeRSquareList[is.na(mergedCumulativeRSquareList)] = 0
                         mergedCumulativeRMSEList[is.na(mergedCumulativeRMSEList)] = 0
 
-                        mlmList <- unlist(lapply(platformPerformanceResult$mlmPerformanceResults, function(x) x$method))
+                        mlmList <- unlist(lapply(platformPerformanceResult$mlmPerformanceResults,
+                                                 function(x){
+                                                         if(!is.null(x$cumulativeMeanRMSEList))
+                                                                 x$method
+                                                 }))
 
                         generatePerformancePlot(data = mergedCumulativeRMSEList*100, plotName = "RMSE Means",
                                                 dataNames = mlmList,

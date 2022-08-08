@@ -68,6 +68,8 @@ evalMetrics <- function(true, predicted) {
 #' \dontrun{gePretreatmentVector(pretreatment)}
 #'
 gePretreatmentVector <- function(pretreatment){
+        # Pretreatment parameter is changed to vector as it is required by
+        # caret::preProcess method.
         if (pretreatment == "no_pretreatment"){
                 return(pretreatment)
         }
@@ -104,6 +106,7 @@ getRegressionParameters <- function(mlm, dataSet, platform){
         if(mlmParams[4] == ""  || is.na(mlmParams[4]))
                 mlmParams[4] <- defPercentageForTrainingSet
 
+        # regressionParameterList object contains all necessary infırmation for a machine learning model to run
         regressionParameterList <- list("method" = mlmParams[1], "pretreatment" =  gePretreatmentVector(mlmParams[2]), "numberOfIterations" = as.numeric(mlmParams[3]),
                                         "percentageForTrainingSet" = as.numeric(mlmParams[4]), dataSet = dataSet, "platform" = platform)
 
@@ -134,8 +137,8 @@ plotPrediction <- function(model, testSet) {
 #' @author Ozlem Karadeniz \email{ozlem.karadeniz.283@@cranfield.ac.uk}
 #' @param configFile  configFile
 #' @import configr
-#' @return list of config object containing machineLearningModels, outputDirectory
-#' platformList read from configFile
+#' @return list of config object containing machineLearningModels, outputDirectory,
+#' createStatisticsFile, createPerformancePlots, createPCAPlots
 #'
 #' @examples
 #' \dontrun{readConfigFile(configFile)}
@@ -150,7 +153,7 @@ readConfigFile<-function(configFile){
         if(!is.null(config$outputDirectory) && !file.exists(config$outputDirectory))
                 stop("Output directory does not exist")
 
-        #if outpur directory is not provided, working directory is used as an outputDirectory
+        #if output directory is not provided, working directory is used as an outputDirectory
         if(is.null(config$outputDirectory) || is.na(config$outputDirectory))
                 config$outputDirectory = getwd()
 
