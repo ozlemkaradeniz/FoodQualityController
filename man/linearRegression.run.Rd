@@ -12,7 +12,7 @@ number_of_iterations: number of iterations to calculate performance
 pretreatment: data pretreatment method (auto-scale, mean-center or range-scale
 is supported)
 percentageForTrainingSet: percentage of samples in training dataset
-method: method name as SLR or OLSR
+method: method name as SR or OLS
 dataSet: dataFrame which is read from data file and subjected to the model.}
 }
 \value{

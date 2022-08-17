@@ -3,10 +3,11 @@
 #' and machine learning models
 #' @author Ozlem Karadeniz \email{ozlem.karadeniz.283@@cranfield.ac.uk}
 #' @param platformPerformanceResults list of machine learning performance results
-#' for each paltofrm
+#' for each platform
 #' @param outputDir output directory name provided by the use in config json file
 #' @param createStatisticsFile boolean value indicating whether to create statistics
 #' file or not
+#' @import gplots
 #'
 #' @examples
 #' \dontrun{generateStatistics(platformPerformanceResults, outputDir, createStatisticsFile)}
@@ -15,8 +16,8 @@ generateStatistics <- function(platformPerformanceResults, outputDir, createStat
 
         mlmLongDesc = list("NN" = "Neural Network", "SVM-Radial" = "SVM-Radial", "SVM-Polynomial" = "SVM-Polynomial",
                            "KNN" = "k-nearest neighbors", "RFR" = "Random Forest",
-                           "PLSR" = "Partial least squares Regression", "PCR" = "PCA Regression", "OLSR"= "Ordinary Least Squares Regression" ,
-                           "SLR" = "Stepwise Linear Regression", "RR" ="Ridge Regression","LR" = "Lasso Regression", "ER" = "Elastic Regression",
+                           "PLS" = "Partial least squares Regression", "PCR" = "PCA Regression", "OLS"= "Ordinary Least Squares Regression" ,
+                           "SR" = "Stepwise Regression", "RR" ="Ridge Regression","LR" = "Lasso Regression", "ER" = "Elastic Regression",
                            "XGBoost" = "XGBoost","RT"= "Regression Tree"
         )
 
@@ -59,5 +60,24 @@ generateStatistics <- function(platformPerformanceResults, outputDir, createStat
                 write.csv(Rmsedf, file = RMSEFile)
                 RSquareFile <- paste0(outputDir, "/RSquare_Statistics.csv")
                 write.csv(RSquaredf, file = RSquareFile)
+                library(xlsx)
+                write.xlsx(Rmsedf, file="Statistics.xlsx", sheetName="RMSE", row.names=FALSE)
+                write.xlsx(RSquaredf, file="Statistics.xlsx", sheetName="RSquared", append=TRUE, row.names=FALSE)
+        }
+
+        if(nrow(Rmsedf) > 1){
+                # Plot best prediction method for each technique and medium according to rmse
+                pdf(paste0(outputDir, "/Heatmap_ML_methods.pdf"))
+                par(cex.main=1)
+
+                heatmap.2(as.matrix(Rmsedf), Rowv=FALSE, key=TRUE,
+                          cexCol = 1, cexRow=1,
+                          cellnote = as.matrix(Rmsedf), notecol="black", notecex=0.8,
+                          margins =c(6,5),
+                          col=colorRampPalette(c("green", "red")), breaks = seq(0.3, 1.3, 0.1),
+                          main = paste0("Best ML method by RMSE"),
+                          scale = "none", density.info="none", trace="none", dendrogram="none", Colv="NA",
+                )
+                dev.off()
         }
 }

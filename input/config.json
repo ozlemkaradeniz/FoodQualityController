@@ -28,24 +28,95 @@
   ],
   "machineLearningModels" : [
     {
-       "name": "Ordinary Least Squares Regression",
-       "shortName": "OLSR",
-       "numberOfIterations": 10,
-       "pretreatment": "mean-center"
-    },
-    {
        "name": "Neural Network",
        "shortName": "NN",
-       "numberOfIterations": 1,
+       "numberOfIterations": 10,
        "proportionOfTrainingSet": 0.7,
        "pretreatment": "range-scale"
     },
     {
        "name": "k-nearest neighbors",
        "shortName": "KNN",
-       "numberOfIterations": 80,
+       "numberOfIterations": 10,
        "proportionOfTrainingSet": 0.7,
        "pretreatment": "range-scale"
+    },
+    {
+       "name": "SVM-Radial",
+       "shortName": "SVM-Radial",
+       "numberOfIterations": 10,
+       "proportionOfTrainingSet": 0.7,
+        "pretreatment": "range-scale"
+    },
+    {
+       "name": "SVM-Polynomial",
+       "shortName": "SVM-Polynomial",
+       "numberOfIterations": 10,
+       "proportionOfTrainingSet": 0.7,
+        "pretreatment": "range-scale"
+    },
+    {
+       "name": "Regression Tree",
+       "shortName": "RT",
+       "numberOfIterations": 10
+    },
+    {
+       "name": "XGBoost",
+       "shortName": "XGBoost",
+       "numberOfIterations": 1,
+        "pretreatment": "range-scale"
+    },
+    {
+       "name": "Random Forest",
+       "shortName": "RFR",
+       "numberOfIterations": 1,
+       "proportionOfTrainingSet": 0.7
+    },
+    {
+       "name": "Partial least squares Regression",
+       "shortName": "PLS",
+       "numberOfIterations": 10,
+       "proportionOfTrainingSet": 0.7,
+        "pretreatment": "range-scale"
+    },
+    {
+       "name": "PCA Regression",
+       "shortName": "PCR",
+       "numberOfIterations": 10,
+       "proportionOfTrainingSet": 0.7,
+        "pretreatment": "range-scale"
+    },
+    {
+       "name": "Ordinary Least Squares Regression",
+       "shortName": "OLS",
+       "numberOfIterations": 10,
+       "pretreatment": "mean-center",
+        "pretreatment": "range-scale"
+    },
+    {
+       "name": "Stepwise Regression",
+       "shortName": "SR",
+       "numberOfIterations": 10,
+       "pretreatment": "mean-center",
+        "pretreatment": "range-scale"
+    },
+    {
+       "name": "Ridge Regression",
+       "shortName": "RR",
+       "numberOfIterations": 10,
+       "pretreatment": "mean-center"
+    },
+    {
+       "name": "Lasso Regression",
+       "shortName": "LR",
+       "numberOfIterations": 10,
+       "pretreatment": "mean-center"
+    },
+    {
+       "name": "Elastic Regression",
+       "shortName": "ER",
+       "numberOfIterations": 10,
+       "pretreatment": "mean-center"
     }
   ]
 }

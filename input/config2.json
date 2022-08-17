@@ -1,0 +1,21 @@
+{
+  "name": "Input configuration file for BeefAssignment",
+  "outputDirectory": "/Users/ozlemkaradeniz/Cranfield/Thesis/output",
+  "createStatisticsFile" : true,
+  "createPerformancePlots": true,
+  "createPCAPlots": true,
+  "platformList" : [
+    {
+       "platformName": "freshdetect",
+       "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/freshdetect_beef_air_spoilage_GM_ok.xlsx"
+    }
+  ],
+  "machineLearningModels" : [
+    {
+       "name": "PLS",
+       "shortName": "PLS",
+       "numberOfIterations": 10,
+       "proportionOfTrainingSet": 0.7
+    }
+  ]
+}

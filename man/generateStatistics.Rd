@@ -8,7 +8,7 @@ generateStatistics(platformPerformanceResults, outputDir, createStatisticsFile)
 }
 \arguments{
 \item{platformPerformanceResults}{list of machine learning performance results
-for each paltofrm}
+for each platform}
 
 \item{outputDir}{output directory name provided by the use in config json file}
 

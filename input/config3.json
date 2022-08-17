@@ -1,0 +1,39 @@
+{
+  "name": "Input configuration file for BeefAssignment",
+  "outputDirectory": "/Users/ozlemkaradeniz/Cranfield/Thesis/output",
+  "createStatisticsFile" : true,
+  "createPerformancePlots": true,
+  "createPCAPlots": true,
+  "platformList" : [
+    {
+       "platformName": "MSI",
+       "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/MSI_beef_air_spoilage_GM_OK.xlsx"
+    },
+    {
+       "platformName": "ENOSE",
+       "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/enose_beef_air_spoilage_GM_OK.xlsx"
+    },
+    {
+       "platformName": "FTIR",
+       "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/FTIR_beef_air_spoilage_GM_ok.xlsx"
+    },
+    {
+       "platformName": "freshdetect",
+       "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/freshdetect_beef_air_spoilage_GM_ok.xlsx"
+    },
+    {
+       "platformName": "MSIF",
+       "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/MSIF_beef_air_spoilage_GM_ok.csv"
+    }
+  ],
+  "machineLearningModels" : [
+    {
+       "name": "NN",
+       "shortName": "NN",
+       "numberOfIterations": 10,
+       "proportionOfTrainingSet": 0.7,
+       "pretreatment": "range-scale",
+       "direction" : "forward"
+    }
+  ]
+}
