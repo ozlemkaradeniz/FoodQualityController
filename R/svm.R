@@ -29,7 +29,10 @@
 svm.run <- function(regressionParameterList){
         cat('svm.run \n')
 
-        dataSet<-regressionParameterList$dataSet
+        preProcValues <- preProcess(regressionParameterList$dataSet, method = regressionParameterList$pretreatment )
+        regressionParameterList$dataSet <- predict(preProcValues, regressionParameterList$dataSet)
+        dataSet <- regressionParameterList$dataSet
+
         set.seed(1821)
         # Partition data into training and test set
         trainIndexList <- createDataPartition(dataSet$TVC, p = regressionParameterList$percentageForTrainingSet,
@@ -41,7 +44,8 @@ svm.run <- function(regressionParameterList){
         RSquareList <- vector(mode="list", length = regressionParameterList$numberOfIterations)
 
         # do things in parallel
-        svmModelList <- foreach(i=seq(1:regressionParameterList$numberOfIterations), .inorder=FALSE) %dopar% {
+       # svmModelList <- foreach(i=seq(1:regressionParameterList$numberOfIterations), .inorder=FALSE) %dopar% {
+        for(i in 1:regressionParameterList$numberOfIterations) {
                 # training set and test set are created
                 trainSet <- dataSet[trainIndexList[,i],]
                 testSet <- dataSet[-trainIndexList[,i],]
@@ -49,8 +53,8 @@ svm.run <- function(regressionParameterList){
                 # This generic function tunes hyperparameters of statistical methods using a grid search over supplied parameter ranges.
                 # tune function uses tune.control object created with fix sampling
                 tuningResult <- e1071::tune(svm, trainSet, trainSet$TVC,
-                                               ranges = list(cost = defCostRange, gamma = defGammaRange, epsilon = defEpsilonRange),
-                                               tunecontrol = tune.control(sampling = "fix")
+                                            ranges = list(cost = defCostRange, gamma = defGammaRange, epsilon = defEpsilonRange),
+                                            tunecontrol = tune.control(sampling = "fix")
                 )
 
                 # list of bestHyperParams is created with best hyperparameters
@@ -89,7 +93,7 @@ svm.run <- function(regressionParameterList){
         RSquareList <- unlist(lapply(svmModelList, function(x) x$RSquare))
         meanRSquare <- round(mean(RSquareList), 4)
         cumulativeMeanRSquareList <- cumsum(RSquareList) / seq_along(RSquareList)
-        names(cumulativeMeanRSquareList) <- seq_along(RMSEList)
+        names(cumulativeMeanRSquareList) <- seq_along(RSquareList)
 
         cat('svm mean RMSE: ', meanRMSE, '\n')
         cat('svm mean RSquare: ', meanRSquare, '\n')
@@ -101,3 +105,4 @@ svm.run <- function(regressionParameterList){
 
         return(result)
 }
+

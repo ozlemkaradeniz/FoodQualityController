@@ -1,0 +1,22 @@
+{
+  "name": "Input configuration file for BeefAssignment",
+  "outputDirectory": "/Users/ozlemkaradeniz/Cranfield/Thesis/output",
+  "createStatisticsFile" : true,
+  "createPerformancePlots": true,
+  "createPCAPlots": true,
+  "platformList" : [
+    {
+       "platformName": "ENOSE",
+       "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/enose_beef_air_spoilage_GM_OK.xlsx"
+    }
+  ],
+  "machineLearningModels" : [
+    {
+       "name": "SVM-Radial",
+       "shortName": "SVM-Radial",
+       "numberOfIterations": 10,
+       "proportionOfTrainingSet": 0.7,
+        "pretreatment": "range-scale"
+    }
+  ]
+}

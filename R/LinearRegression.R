@@ -9,7 +9,7 @@
 #' pretreatment: data pretreatment method (auto-scale, mean-center or range-scale
 #' is supported)
 #' percentageForTrainingSet: percentage of samples in training dataset
-#' method: method name as SLR or OLSR
+#' method: method name as SR or OLS
 #' dataSet: dataFrame which is read from data file and subjected to the model.
 #' @return a list containing performance results
 #' RMSEList: a list which contains RMSE of each iteration
@@ -28,11 +28,11 @@
 linearRegression.run <- function(regressionParameterList){
         cat('linearRegression.run \n')
 
-        dataSet<-regressionParameterList$dataSet
         # In regression, it is often recommended to scale the features to make it easier to interpret the intercept term.
         # Scaling type is supplied by the user
-        preProcValues <- preProcess(dataSet, method = regressionParameterList$pretreatment)
-        dataSet <- predict(preProcValues, dataSet)
+        preProcValues <- preProcess(regressionParameterList$dataSet, method = regressionParameterList$pretreatment )
+        regressionParameterList$dataSet <- predict(preProcValues, regressionParameterList$dataSet)
+        dataSet <- regressionParameterList$dataSet
 
         set.seed(1821)
         # Partition data into training and test set
@@ -44,16 +44,20 @@ linearRegression.run <- function(regressionParameterList){
         RSquareList <- vector(mode="list", length = regressionParameterList$numberOfIterations)
 
         # do things in parallel
-        modelList <- foreach(i=seq(1:regressionParameterList$numberOfIterations), .inorder=FALSE) %dopar% {
+        #modelList <- foreach(i=seq(1:regressionParameterList$numberOfIterations), .inorder=FALSE) %dopar% {
+        for(i in 1:regressionParameterList$numberOfIterations) {
                 # training set and test set are created
                 trainSet <- dataSet[trainIndexList[,i],]
                 testSet <- dataSet[-trainIndexList[,i],]
 
                 modelFit <- lm(TVC~ . , data=trainSet)
 
-                # If Stepwise Linear Regression selected
-                if (regressionParameterList$method == "SLR"){
-                        modelFit <- step(modelFit) # perform step-wise feature selection
+                # If Stepwise Regression selected
+                if (regressionParameterList$method == "SR"){
+
+                        direction <- regressionParameterList$direction
+                        cat("stepwise regression direction :", direction, "\n")
+                        modelFit <- step(modelFit, direction = c(direction) ) # perform stepwise feature selection
                 }
 
                 # Using testSet the model predicts TVC values
@@ -77,7 +81,7 @@ linearRegression.run <- function(regressionParameterList){
         RSquareList <- unlist(lapply(modelList, function(x) x$RSquare))
         meanRSquare <- round(mean(RSquareList), 4)
         cumulativeMeanRSquareList <- cumsum(RSquareList) / seq_along(RSquareList)
-        names(cumulativeMeanRSquareList) <- seq_along(RMSEList)
+        names(cumulativeMeanRSquareList) <- seq_along(RSquareList)
 
         cat(paste0(regressionParameterList$method,' mean RMSE: ', meanRMSE, '\n'))
         cat(paste0(regressionParameterList$method,' mean RSquare: ', meanRSquare, '\n'))

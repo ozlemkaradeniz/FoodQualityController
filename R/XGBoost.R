@@ -18,10 +18,13 @@
 XGBoost.run <- function(regressionParameterList){
         cat('run.XGBoost \n')
 
+        preProcValues <- preProcess(regressionParameterList$dataSet, method = regressionParameterList$pretreatment )
+        regressionParameterList$dataSet <- predict(preProcValues, regressionParameterList$dataSet)
+        dataSet <- regressionParameterList$dataSet
+
         set.seed(90)
-        dataSet<-regressionParameterList$dataSet
         trainIndex <- createDataPartition(dataSet$TVC, p = regressionParameterList$percentageForTrainingSet,
-                                          list = FALSE, times = regressionParameterList$numberOfIterations)
+                                          list = FALSE, times = 1)
 
         train = dataSet[trainIndex, ]
         test = dataSet[-trainIndex, ]
@@ -41,7 +44,7 @@ XGBoost.run <- function(regressionParameterList){
         #defining a watchlist
         watchlist = list(train=xgb_train, test=xgb_test)
 
-        #fit XGBoost model and display training and testing data at each iteartion
+        #fit XGBoost model and display training and testing data at each iteration
         model = xgb.train(data = xgb_train, max.depth = 3, watchlist=watchlist, nrounds = 100)
 
         min<- min(model$evaluation_log$train_rmse)
@@ -54,7 +57,9 @@ XGBoost.run <- function(regressionParameterList){
         pred_y = predict(model_xgboost, xgb_test)
 
         modelRMSE <- RMSE(test_y, pred_y)
+        modelRMSE <- round(modelRMSE, 4)
         modelRSquare <- RSQUARE(test_y, pred_y)
+        modelRSquare <- round(modelRSquare, 4)
 
         result <- list("RMSE" = modelRMSE, "RSquare" = modelRSquare, method = regressionParameterList$method, platform = regressionParameterList$platform)
 

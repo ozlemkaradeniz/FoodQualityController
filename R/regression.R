@@ -26,6 +26,9 @@ run.analysis <- function(configParams){
                 bestRSquare<-0
                 bestMLM<-""
 
+                if(configParams$createPCAPlots == TRUE)
+                        generatePCAPlots(dataSet, configParams$outputDirectory, platformList[i])
+
                 mlmPerformanceResults <- vector(mode="list", length = length(mlmList))
 
                 # for each platforms and machine learning models following code is executed
@@ -53,8 +56,6 @@ run.analysis <- function(configParams){
                         mlmPerformanceResults[[j]]  <- mlmPerformanceResult
                 }
 
-                if(configParams$createPCAPlots == TRUE)
-                        generatePCAPlots(dataSet, configParams$outputDirectory, platformList[i])
 
                 # Best machine learning model for the platform is printed
                 cat("For ", platformList[i], " best model is ", bestMLM , " with RMSE: " , bestRMSE,  " and R-squared: ", bestRSquare, "\n")
@@ -93,6 +94,7 @@ run.regression <- function(regressionParameterList){
         method<-regressionParameterList$method
         cat('run.regression is starting \n')
         cat(paste0("mehod name : ", method, "\n"))
+        result<-NULL
         if(method == "SVM-Radial"){
                 cat('svm.run is starting \n')
                 regressionParameterList$kernel <- "radial"
@@ -114,9 +116,9 @@ run.regression <- function(regressionParameterList){
                 cat('randomForest.run is starting \n')
                 result<-randomForest.run(regressionParameterList)
         }
-        if(method == "PLSR" || method == "PCR"){
-                cat(paste0("plsr.pca.run is starting for ", method ,"\n"))
-                result<-plsr.pca.run(regressionParameterList)
+        if(method == "PLS" || method == "PCR"){
+                cat(paste0("pls.pcr.run is starting for ", method ,"\n"))
+                result<-pls.pcr.run(regressionParameterList)
         }
         if(method == "RT"){
                 cat('regressionTree.run is starting \n')
@@ -128,8 +130,8 @@ run.regression <- function(regressionParameterList){
         }
 
         # Linear regression models
-        # Ordinary Least Squares Regression (OLSR) or Stepwize Linear Regression (SLR)
-        if(method == "OLSR" || method == "SLR"){
+        # Ordinary Least Squares Regression (OLS) or Stepwise Regression (SR)
+        if(method == "OLS" || method == "SR"){
                 cat('linearRegression.run is starting \n')
                 result<-linearRegression.run(regressionParameterList)
 
@@ -182,7 +184,7 @@ assess.quality <- function(configFile=configFile){
         configParams = readConfigFile(configFile)
 
         # in run.analysis foreach method is called as parallel
-        registerDoParallel(cores=4)
+        #registerDoParallel(cores=4)
 
         run.analysis(configParams)
 }

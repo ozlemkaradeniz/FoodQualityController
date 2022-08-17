@@ -17,39 +17,62 @@
 #' \dontrun{neuralNetwork.run(regressionParameterList)}
 
 neuralNetwork.run <- function(regressionParameterList){
-        cat(paste0('neuralNetwork.run for platform = ', regressionParameterList$platform, " \n"))
+        cat(paste0('neuralNetwork.run for platform 222 = ', regressionParameterList$platform, " \n"))
 
-        dataSet<-regressionParameterList$dataSet
-
-        preProcValues <- preProcess(dataSet, method = "range")
-        dataSet <- predict(preProcValues, dataSet)
+        preProcValues <- preProcess(regressionParameterList$dataSet, method = regressionParameterList$pretreatment )
+        regressionParameterList$dataSet <- predict(preProcValues, regressionParameterList$dataSet)
+        dataSet <- regressionParameterList$dataSet
 
         set.seed(90)
-        trainIndex <- createDataPartition(dataSet$TVC, p = regressionParameterList$percentageForTrainingSet,
-                                           list = FALSE, times = regressionParameterList$numberOfIterations)
-        trainSet <- dataSet[trainIndex,]
-        testSet <- dataSet[-trainIndex,]
+        trainIndexList <- createDataPartition(dataSet$TVC, p = regressionParameterList$percentageForTrainingSet,
+                                          list = FALSE, times = regressionParameterList$numberOfIterations)
 
-        n <- neuralnet(TVC ~ . ,
-                       data = trainSet,
-                       hidden = 5,
-                       err.fct = "sse",
-                       linear.output = FALSE,
-                       lifesign = 'full',
-                       rep = 2,
-                       algorithm = "rprop+",
-                       stepmax = 100000)
+        nnModelList <- vector(mode="list", length = regressionParameterList$numberOfIterations)
+        RMSEList <- vector(mode="list", length = regressionParameterList$numberOfIterations)
+        RSquareList <- vector(mode="list", length = regressionParameterList$numberOfIterations)
+        regressionParameterList$numberOfIterations<-10
 
-        #plot(n, rep = 1)
+        # do things in parallel
+        #nnModelList <- foreach(i=seq(1:regressionParameterList$numberOfIterations), .inorder=FALSE) %dopar% {
+        for(i in 1:regressionParameterList$numberOfIterations) {
+                # training set and test set are created
+                trainSet <- dataSet[trainIndexList[,i],]
+                testSet <- dataSet[-trainIndexList[,i],]
 
-        predicted <- predict(n, rep = 1, testSet)
+                modelFit <- neuralnet(TVC ~ . ,
+                               data = trainSet)
 
-        modelRMSE <- RMSE(testSet$TVC, predicted)
-        modelRSquare <- RSQUARE(testSet$TVC, predicted)
+                predictedValues <- predict(modelFit,testSet)
 
-        cat('Meural Network RMSE: ', modelRMSE, '\n')
+                # Performance metrics (RMSE and RSquare) are calculated by comparing the predicted and actual values
+                RMSE<- RMSE(testSet$TVC, predictedValues)
+                RSquare <- RSQUARE(testSet$TVC, predictedValues)
 
-        result <- list("RMSE" = modelRMSE, "RSquare" = modelRSquare, method = regressionParameterList$method, platform = regressionParameterList$platform)
+                nnModelList[[i]] <- list("model" = modelFit, "RMSE" = RMSE, "RSquare" = RSquare)
+
+        }
+
+        # RMSEList contains list of RMSE for each iteration
+        RMSEList <- unlist(lapply(nnModelList, function(x) x$RMSE))
+        meanRMSE <- round(mean(RMSEList), 4)
+        cumulativeMeanRMSEList <- cumsum(RMSEList) / seq_along(RMSEList)
+        names(cumulativeMeanRMSEList) <- seq_along(RMSEList)
+
+        # RSquareList contains list of RSquare for each iteration
+        RSquareList <- unlist(lapply(nnModelList, function(x) x$RSquare))
+        meanRSquare <- round(mean(RSquareList), 4)
+        cumulativeMeanRSquareList <- cumsum(RSquareList) / seq_along(RSquareList)
+        names(cumulativeMeanRSquareList) <- seq_along(RSquareList)
+
+        cat('Neural Network mean RMSE: ', meanRMSE, '\n')
+        cat('Neural Network  mean RSquare: ', meanRSquare, '\n')
+
+        # Result object is returned to run.regression function in regression.R, which contains whole performance information for the machine learning model
+        result <- list("RMSEList"= RMSEList, "cumulativeMeanRMSEList" = cumulativeMeanRMSEList, "RMSE" = meanRMSE,
+                       "RSquareList" = RSquareList, "cumulativeMeanRSquareList" = cumulativeMeanRSquareList, "RSquare" = meanRSquare,
+                        method = regressionParameterList$method, platform = regressionParameterList$platform)
+
+
         return(result)
 
 }

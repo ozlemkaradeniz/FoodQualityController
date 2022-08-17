@@ -29,11 +29,11 @@
 knn.run <- function(regressionParameterList){
         cat('knn.run \n')
 
-        dataSet <- regressionParameterList$dataSet
         # knn as a distance based algorithm is affected by the scale of the variables.
         # Scaling type is supplied by the user
         preProcValues <- preProcess(regressionParameterList$dataSet, method = regressionParameterList$pretreatment )
         regressionParameterList$dataSet <- predict(preProcValues, regressionParameterList$dataSet)
+        dataSet <- regressionParameterList$dataSet
 
         set.seed(1821)
         # Partition data into training and test set
@@ -46,7 +46,8 @@ knn.run <- function(regressionParameterList){
         RSquareList <- vector(mode="list", length = regressionParameterList$numberOfIterations)
 
         # do things in parallel
-        knnModelList <- foreach(i=seq(1:regressionParameterList$numberOfIterations), .inorder=FALSE) %dopar% {
+        #knnModelList <- foreach(i=seq(1:regressionParameterList$numberOfIterations), .inorder=FALSE) %dopar% {
+        for(i in 1:regressionParameterList$numberOfIterations) {
                 # training set and test set are created
                 trainSet <- dataSet[trainIndexList[,i],]
                 testSet <- dataSet[-trainIndexList[,i],]
@@ -85,7 +86,7 @@ knn.run <- function(regressionParameterList){
         RSquareList <- unlist(lapply(knnModelList, function(x) x$RSquare))
         meanRSquare <- round(mean(RSquareList), 4)
         cumulativeMeanRSquareList <- cumsum(RSquareList) / seq_along(RSquareList)
-        names(cumulativeMeanRSquareList) <- seq_along(RMSEList)
+        names(cumulativeMeanRSquareList) <- seq_along(RSquareList)
 
         cat('k-NN mean RMSE: ', meanRMSE, '\n')
         cat('k-NN mean RSquare: ', meanRSquare, '\n')
@@ -94,4 +95,6 @@ knn.run <- function(regressionParameterList){
         result <- list("RMSEList"= RMSEList, "cumulativeMeanRMSEList" = cumulativeMeanRMSEList, "RMSE" = meanRMSE,
                        "RSquareList" = RSquareList, "cumulativeMeanRSquareList" = cumulativeMeanRSquareList, "RSquare" = meanRSquare,
                        "bestHyperParamsList" = bestHyperParamsList, method = regressionParameterList$method, platform = regressionParameterList$platform)
+
+        return(result)
 }

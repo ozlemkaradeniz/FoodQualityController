@@ -28,22 +28,19 @@
 randomForest.run <- function(regressionParameterList){
         cat('randomForest.run \n')
 
-        dataSet<-regressionParameterList$dataSet
+        dataSet <- regressionParameterList$dataSet
+
+        bestHyperParamsList<-c()
+        modelList <- vector(mode="list", length = regressionParameterList$numberOfIterations)
+        RMSEList <- vector(mode="list", length = regressionParameterList$numberOfIterations)
+        RSquareList <- vector(mode="list", length = regressionParameterList$numberOfIterations)
+
         set.seed(1821)
         # Partition data into training and test set
         trainIndexList <- createDataPartition(dataSet$TVC, p = regressionParameterList$percentageForTrainingSet,
                                               list = FALSE, times = regressionParameterList$numberOfIterations)
 
-        RMSEList <-c()
-        RSquareList<-c()
-        bestHyperParamsList<-c()
-
-        modelList <- vector(mode="list", length = regressionParameterList$numberOfIterations)
-        RMSEList <- vector(mode="list", length = regressionParameterList$numberOfIterations)
-        RSquareList <- vector(mode="list", length = regressionParameterList$numberOfIterations)
-
-        # do things in parallel
-        modelList <- foreach(i=seq(1:regressionParameterList$numberOfIterations), .inorder=FALSE) %dopar% {
+        for(i in 1:regressionParameterList$numberOfIterations) {
                 # training set and test set are created
                 trainSet <- dataSet[trainIndexList[,i],]
                 trainSet_y<-trainSet[,names(trainSet)=="TVC"]
@@ -54,10 +51,11 @@ randomForest.run <- function(regressionParameterList){
 
                 # Starting with the default value of mtry, search for the optimal value (with respect to Out-of-Bag error estimate) of mtry for randomForest.
                 tuningResult <- tuneRF(trainSet_x, trainSet_y, , ntreeTry=1000, stepFactor=1.1, improve=0.0000001,
-                                          trace=TRUE, plot=TRUE, doBest=TRUE)
+                                       trace=TRUE, plot=TRUE, doBest=TRUE)
 
                 # list of bestHyperParams is created with best hyperparameters
                 bestHyperParams <- list("mtry"=tuningResult$mtry,"ntree"=tuningResult$ntree)
+
                 # Tuning is called for each iteration seperately as the dataset differs in each iteration
                 # List of hyperparameters for each iteration is created
                 bestHyperParamsList <- c(bestHyperParamsList, bestHyperParams)
@@ -73,10 +71,11 @@ randomForest.run <- function(regressionParameterList){
                 RMSE<- RMSE(testSet$TVC, predictedValues)
                 RSquare <- RSQUARE(testSet$TVC, predictedValues)
 
-                # RandomForest model with the performance metrics for the current iteration is appended to the RandomForest model list
-                # RandomForest model list contains all RandomForest models for all iterations
                 modelList[[i]] <- list("model" = modelFit, "RMSE" = RMSE, "RSquare" = RSquare)
         }
+
+        cat('Random Forest mean RMSE: ', RMSE, '\n')
+        cat('Random Forest mean RSquare: ', RSquare, '\n')
 
         # RMSEList contains list of RMSE for each iteration
         RMSEList <- unlist(lapply(modelList, function(x) x$RMSE))
@@ -88,15 +87,15 @@ randomForest.run <- function(regressionParameterList){
         RSquareList <- unlist(lapply(modelList, function(x) x$RSquare))
         meanRSquare <- round(mean(RSquareList), 4)
         cumulativeMeanRSquareList <- cumsum(RSquareList) / seq_along(RSquareList)
-        names(cumulativeMeanRSquareList) <- seq_along(RMSEList)
+        names(cumulativeMeanRSquareList) <- seq_along(RSquareList)
 
-        cat('Random Forest mean RMSE: ', meanRMSE, '\n')
-        cat('Random Forest mean RSquare: ', meanRSquare, '\n')
 
         # Result object is returned to run.regression function in regression.R, which contains whole performance information for the machine learning model
         result <- list("RMSEList"= RMSEList, "cumulativeMeanRMSEList" = cumulativeMeanRMSEList, "RMSE" = meanRMSE,
                        "RSquareList" = RSquareList, "cumulativeMeanRSquareList" = cumulativeMeanRSquareList, "RSquare" = meanRSquare,
                        "bestHyperParamsList" = bestHyperParamsList, method = regressionParameterList$method, platform = regressionParameterList$platform)
+
+        return(result)
         return(result)
 }
 
@@ -150,7 +149,3 @@ randomforest.run.alternative <- function(dataAll){
         return(list("RMSE" = modelRMSE, "RSquare" = modelRSquare))
 
 }
-
-
-
-

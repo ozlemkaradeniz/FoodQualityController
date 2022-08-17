@@ -70,7 +70,8 @@ pruneTree <-function(modelTree, testSet) {
 #'
 regressionTree.run <- function(regressionParameterList){
 
-        dataSet<-regressionParameterList$dataSet
+        dataSet <- regressionParameterList$dataSet
+
         set.seed(1821)
         trainIndexList <- createDataPartition(dataSet$TVC, p = regressionParameterList$percentageForTrainingSet,
                                               list = FALSE, times = regressionParameterList$numberOfIterations)
@@ -80,7 +81,8 @@ regressionTree.run <- function(regressionParameterList){
         RSquareList <- vector(mode="list", length = regressionParameterList$numberOfIterations)
 
         # do things in parallel
-        modelList <- foreach(i=seq(1:regressionParameterList$numberOfIterations), .inorder=FALSE) %dopar% {
+        #modelList <- foreach(i=seq(1:regressionParameterList$numberOfIterations), .inorder=FALSE) %dopar% {
+        for(i in 1:regressionParameterList$numberOfIterations) {
                 trainSet <- dataSet[trainIndexList[,i],]
                 testSet <- dataSet[-trainIndexList[,i],]
 
@@ -104,7 +106,7 @@ regressionTree.run <- function(regressionParameterList){
         RSquareList <- unlist(lapply(modelList, function(x) x$RSquare))
         meanRSquare <- round(mean(RSquareList), 4)
         cumulativeMeanRSquareList <- cumsum(RSquareList) / seq_along(RSquareList)
-        names(cumulativeMeanRSquareList) <- seq_along(RMSEList)
+        names(cumulativeMeanRSquareList) <- seq_along(RSquareList)
 
         cat('Regression Tree mean RMSE: ', meanRMSE, '\n')
         cat('Regression Tree RSquare: ', meanRSquare, '\n')

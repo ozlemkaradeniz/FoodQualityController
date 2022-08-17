@@ -29,12 +29,11 @@
 elasticRegression.run <- function(regressionParameterList){
         cat('elasticRegression.run \n')
 
-        dataSet<-regressionParameterList$dataSet
-        dataSet<-regressionParameterList$dataSet
         # In regression, it is often recommended to scale the features to make it easier to interpret the intercept term.
         # Scaling type is supplied by the user
-        preProcValues <- preProcess(dataSet, method = regressionParameterList$pretreatment)
-        dataSet <- predict(preProcValues, dataSet)
+        preProcValues <- preProcess(regressionParameterList$dataSet, method = regressionParameterList$pretreatment )
+        regressionParameterList$dataSet <- predict(preProcValues, regressionParameterList$dataSet)
+        dataSet <- regressionParameterList$dataSet
 
         set.seed(1821)
         # Partition data into training and test set
@@ -47,7 +46,8 @@ elasticRegression.run <- function(regressionParameterList){
         RSquareList <- vector(mode="list", length = regressionParameterList$numberOfIterations)
 
         # do things in parallel
-        modelList <- foreach(i=seq(1:regressionParameterList$numberOfIterations), .inorder=FALSE) %dopar% {
+        #modelList <- foreach(i=seq(1:regressionParameterList$numberOfIterations), .inorder=FALSE) %dopar% {
+        for(i in 1:regressionParameterList$numberOfIterations) {
                 # training set and test set are created
                 trainSet <- dataSet[trainIndexList[,i],]
                 testSet <- dataSet[-trainIndexList[,i],]
@@ -104,7 +104,7 @@ elasticRegression.run <- function(regressionParameterList){
         RSquareList <- unlist(lapply(modelList, function(x) x$RSquare))
         meanRSquare <- round(mean(RSquareList), 4)
         cumulativeMeanRSquareList <- cumsum(RSquareList) / seq_along(RSquareList)
-        names(cumulativeMeanRSquareList) <- seq_along(RMSEList)
+        names(cumulativeMeanRSquareList) <- seq_along(RSquareList)
 
         cat(paste0(regressionParameterList$method,' mean RMSE: ', meanRMSE, '\n'))
         cat(paste0(regressionParameterList$method,' mean RSquare: ', meanRSquare, '\n'))

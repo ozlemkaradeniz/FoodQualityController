@@ -14,7 +14,7 @@ generatePerformancePlot <- function(data, plotName, dataNames, file) {
 
         # generate different colors for every data entry
 
-        colors <- primary.colors(nrow(data) + 1, steps = 3, no.white = TRUE)[-1]
+        colors <- primary.colors(nrow(data) + 1, steps = 3, no.white = TRUE)
 
         # create pdf file
         pdf(file)
@@ -67,10 +67,11 @@ generatePerformancePlots <- function(platformPerformanceResults, outputDir){
 
                 generatePlot <- FALSE
                 for(mlmPerformanceResult in platformPerformanceResult$mlmPerformanceResults){
+                        cat("method : " ,mlmPerformanceResult$method , "\n")
                         if(is.null(mlmPerformanceResult$cumulativeMeanRMSEList) == FALSE){
                                 if(generatePlot == FALSE){
-                                        mergedCumulativeRMSEList<- mlmPerformanceResult$cumulativeMeanRMSEList
-                                        mergedCumulativeRSquareList <- mlmPerformanceResult$cumulativeMeanRSquareList
+                                        mergedCumulativeRMSEList <- dplyr::bind_rows(mlmPerformanceResult$cumulativeMeanRMSEList)
+                                        mergedCumulativeRSquareList <- dplyr::bind_rows(mlmPerformanceResult$cumulativeMeanRSquareList)
                                         generatePlot <- TRUE
                                 }
                                 else{
@@ -79,6 +80,7 @@ generatePerformancePlots <- function(platformPerformanceResults, outputDir){
                                 }
                         }
                 }
+
 
                 if(generatePlot == TRUE){
 
