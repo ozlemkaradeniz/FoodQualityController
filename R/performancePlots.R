@@ -95,12 +95,12 @@ generatePerformancePlots <- function(platformPerformanceResults, outputDir){
                                                                  x$method
                                                  }))
 
-                        generatePerformancePlot(data = mergedCumulativeRMSEList*100, plotName = "RMSE Means",
+                        generatePerformancePlot(data = mergedCumulativeRMSEList*100, plotName = paste0("RMSE Means for ", platformPerformanceResult$platform),
                                                 dataNames = mlmList,
                                                 file = paste(outputDir, "/", platformPerformanceResult$platform, "_RMSE_Means.pdf", sep = ""))
 
 
-                        generatePerformancePlot(data = mergedCumulativeRSquareList*100, plotName = "RSquare Means",
+                        generatePerformancePlot(data = mergedCumulativeRSquareList*100, plotName = paste0("RSquare Means for ", platformPerformanceResult$platform),
                                                 dataNames = mlmList,
                                                 file = paste(outputDir, "/", platformPerformanceResult$platform, "RSquare_Means.pdf", sep = ""))
 

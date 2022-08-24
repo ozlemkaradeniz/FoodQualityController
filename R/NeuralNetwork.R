@@ -40,9 +40,9 @@ neuralNetwork.run <- function(regressionParameterList){
                 testSet <- dataSet[-trainIndexList[,i],]
 
                 modelFit <- neuralnet(TVC ~ . ,
-                               data = trainSet)
+                               data = as.matrix(trainSet))
 
-                predictedValues <- predict(modelFit,testSet)
+                predictedValues <- predict(modelFit, as.matrix(testSet))
 
                 # Performance metrics (RMSE and RSquare) are calculated by comparing the predicted and actual values
                 RMSE<- RMSE(testSet$TVC, predictedValues)

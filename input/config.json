@@ -6,7 +6,7 @@
   "createPCAPlots": true,
   "platformList" : [
     {
-       "platformName": "MSI",
+       "platformName": "VideometerLab",
        "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/MSI_beef_air_spoilage_GM_OK.xlsx"
     },
     {
@@ -18,11 +18,11 @@
        "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/FTIR_beef_air_spoilage_GM_ok.xlsx"
     },
     {
-       "platformName": "freshdetect",
+       "platformName": "Fresh Detect",
        "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/freshdetect_beef_air_spoilage_GM_ok.xlsx"
     },
     {
-       "platformName": "MSIF",
+       "platformName": "VideometerLabUV",
        "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/MSIF_beef_air_spoilage_GM_ok.csv"
     }
   ],
