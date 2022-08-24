@@ -5,7 +5,7 @@ defEpsilonRange<-c(seq(0,0.1,0.03), 0.2, seq(0.3,0.9,0.3))
 maxK <-20
 defNtree<-1000
 defNumberOfIterations <- 80
-defPercentageForTrainingSet <- 0.7
+defPercentageForTrainingSet <- 0.75
 defDirectionInStepwiseRegression <-"backward"
 
 #' RMSE
@@ -245,29 +245,6 @@ readDataset<-function(dataFileName){
         return(dataSet)
 }
 
-#' plot.pca
-#' @description draws  pca and biplot for the given dataset
-#' @author Ozlem Karadeniz \email{ozlem.karadeniz.283@@cranfield.ac.uk}
-#' @param  dataAll  dataFrame object
-#' @import mixOmics
-#' @return
-#'
-#' @examples
-#' \dontrun{plot.pca(dataAll)}
-
-plot.pca <- function(dataAll){
-        #PCA
-        pca.dataAll <- pca(dataAll[,-ncol(dataAll)], ncomp=4, scale=TRUE)
-        print(pca.dataAll)
-        plotIndiv(pca.dataAll, ind.names=as.character(dataAll[,ncol(dataAll)]), group=as.factor(dataAll[,ncol(dataAll)]), style="lattice")
-
-        Var1<-100*(pca.dataAll$prop_expl_var$X[1])
-        Var1<-round(Var1, digits=2)
-        Var2<-100*(pca.dataAll$prop_expl_var$X[2])
-        Var2<-round(Var2, digits=2)
-        biplot(pca.dataAll, xlab=paste("PC1 ", Var1, "%"), ylab=paste("PC2 ", Var2, "%"))
-}
-
 #' selectFeatures
 #' @description reduces the number of features in the dataset
 #' by selecting the more important fautures
@@ -282,6 +259,8 @@ plot.pca <- function(dataAll){
 selectFeatures<-function(dataSet){
 
         # Perform Boruta search
+        # It uses Rnadomforest model behind,
+        # search top-down and eliminates the irrelevant features step-by-step progressively.
         boruta_output <- Boruta(TVC ~ ., data=na.omit(dataSet), doTrace=0)
 
         boruta_signif <- getSelectedAttributes(boruta_output, withTentative = TRUE)

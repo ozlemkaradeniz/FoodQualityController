@@ -70,12 +70,14 @@ elasticRegression.run <- function(regressionParameterList){
                                           search = "random",
                                           verboseIter = TRUE)
 
+
                 # Train the model
-                modelFit <- caret::train(TVC ~ .,
-                                         data = trainSet,
+                modelFit <- caret::train(TVC ~ . , data=trainSet,
                                          method = "glmnet",
                                          tuneLength = 10,
                                          trControl = trainCont)
+
+                modelFit <- glmnet(trainMx, trainTarget, alpha = modelFit$bestTune$alpha, lambda = modelFit$bestTune$lambda)
 
                 # list of bestHyperParams is created with best hyperparameters
                 bestHyperParams <- list(alpha=modelFit$bestTune$alpha,lambda=modelFit$bestTune$lambda)

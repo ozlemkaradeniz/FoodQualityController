@@ -60,22 +60,19 @@ generateStatistics <- function(platformPerformanceResults, outputDir, createStat
                 write.csv(Rmsedf, file = RMSEFile)
                 RSquareFile <- paste0(outputDir, "/RSquare_Statistics.csv")
                 write.csv(RSquaredf, file = RSquareFile)
-                library(xlsx)
-                write.xlsx(Rmsedf, file="Statistics.xlsx", sheetName="RMSE", row.names=FALSE)
-                write.xlsx(RSquaredf, file="Statistics.xlsx", sheetName="RSquared", append=TRUE, row.names=FALSE)
         }
 
         if(nrow(Rmsedf) > 1){
                 # Plot best prediction method for each technique and medium according to rmse
                 pdf(paste0(outputDir, "/Heatmap_ML_methods.pdf"))
-                par(cex.main=1)
+                par(c(5.1,4.1,4.1,2.1))
 
                 heatmap.2(as.matrix(Rmsedf), Rowv=FALSE, key=TRUE,
                           cexCol = 1, cexRow=1,
+                          margins=c(8,14),
                           cellnote = as.matrix(Rmsedf), notecol="black", notecex=0.8,
-                          margins =c(6,5),
                           col=colorRampPalette(c("green", "red")), breaks = seq(0.3, 1.3, 0.1),
-                          main = paste0("Best ML method by RMSE"),
+                          main = paste0("ML methods by RMSE"),
                           scale = "none", density.info="none", trace="none", dendrogram="none", Colv="NA",
                 )
                 dev.off()
