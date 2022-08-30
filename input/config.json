@@ -34,12 +34,40 @@
        "proportionOfTrainingSet": 0.7,
        "pretreatment": "range-scale"
     },
+   {
+       "name": "Neural Network",
+       "shortName": "NN",
+       "numberOfIterations": 10,
+       "proportionOfTrainingSet": 0.7,
+       "pretreatment": "mean-center"
+    },
+    {
+       "name": "Neural Network",
+       "shortName": "NN",
+       "numberOfIterations": 10,
+       "proportionOfTrainingSet": 0.7,
+       "pretreatment": "auto-scale"
+    },
     {
        "name": "k-nearest neighbors",
        "shortName": "KNN",
        "numberOfIterations": 10,
        "proportionOfTrainingSet": 0.7,
        "pretreatment": "range-scale"
+    },
+    {
+       "name": "k-nearest neighbors",
+       "shortName": "KNN",
+       "numberOfIterations": 10,
+       "proportionOfTrainingSet": 0.7,
+       "pretreatment": "mean-center"
+    },
+        {
+       "name": "k-nearest neighbors",
+       "shortName": "KNN",
+       "numberOfIterations": 10,
+       "proportionOfTrainingSet": 0.7,
+       "pretreatment": "auto-scale"
     },
     {
        "name": "SVM-Radial",
@@ -49,11 +77,39 @@
         "pretreatment": "range-scale"
     },
     {
+       "name": "SVM-Radial",
+       "shortName": "SVM-Radial",
+       "numberOfIterations": 10,
+       "proportionOfTrainingSet": 0.7,
+        "pretreatment": "mean-center"
+    },
+    {
+       "name": "SVM-Radial",
+       "shortName": "SVM-Radial",
+       "numberOfIterations": 10,
+       "proportionOfTrainingSet": 0.7,
+        "pretreatment": "auto-scale"
+    },
+    {
        "name": "SVM-Polynomial",
        "shortName": "SVM-Polynomial",
        "numberOfIterations": 10,
        "proportionOfTrainingSet": 0.7,
         "pretreatment": "range-scale"
+    },
+    {
+       "name": "SVM-Polynomial",
+       "shortName": "SVM-Polynomial",
+       "numberOfIterations": 10,
+       "proportionOfTrainingSet": 0.7,
+        "pretreatment": "mean-center"
+    },
+    {
+       "name": "SVM-Polynomial",
+       "shortName": "SVM-Polynomial",
+       "numberOfIterations": 10,
+       "proportionOfTrainingSet": 0.7,
+        "pretreatment": "auto-scale"
     },
     {
        "name": "Regression Tree",
@@ -65,6 +121,18 @@
        "shortName": "XGBoost",
        "numberOfIterations": 1,
         "pretreatment": "range-scale"
+    },
+    {
+       "name": "XGBoost",
+       "shortName": "XGBoost",
+       "numberOfIterations": 1,
+        "pretreatment": "mean-center"
+    },
+    {
+       "name": "XGBoost",
+       "shortName": "XGBoost",
+       "numberOfIterations": 1,
+        "pretreatment": "auto-scale"
     },
     {
        "name": "Random Forest",
@@ -80,6 +148,20 @@
         "pretreatment": "range-scale"
     },
     {
+       "name": "Partial least squares Regression",
+       "shortName": "PLS",
+       "numberOfIterations": 10,
+       "proportionOfTrainingSet": 0.7,
+        "pretreatment": "mean-center"
+    },
+    {
+       "name": "Partial least squares Regression",
+       "shortName": "PLS",
+       "numberOfIterations": 10,
+       "proportionOfTrainingSet": 0.7,
+        "pretreatment": "auto-scale"
+    },
+    {
        "name": "PCA Regression",
        "shortName": "PCR",
        "numberOfIterations": 10,
@@ -87,18 +169,60 @@
         "pretreatment": "range-scale"
     },
     {
+       "name": "PCA Regression",
+       "shortName": "PCR",
+       "numberOfIterations": 10,
+       "proportionOfTrainingSet": 0.7,
+        "pretreatment": "mean-center"
+    },
+   {
+       "name": "PCA Regression",
+       "shortName": "PCR",
+       "numberOfIterations": 10,
+       "proportionOfTrainingSet": 0.7,
+        "pretreatment": "auto-scale"
+    },
+    {
        "name": "Ordinary Least Squares Regression",
        "shortName": "OLS",
        "numberOfIterations": 10,
-       "pretreatment": "mean-center",
+        "pretreatment": "range-scale"
+    },
+    {
+       "name": "Ordinary Least Squares Regression",
+       "shortName": "OLS",
+       "numberOfIterations": 10,
+       "pretreatment": "mean-center"
+    },
+    {
+       "name": "Ordinary Least Squares Regression",
+       "shortName": "OLS",
+       "numberOfIterations": 10,
+       "pretreatment": "auto-scale"
+    },
+    {
+       "name": "Stepwise Regression",
+       "shortName": "SR",
+       "numberOfIterations": 10,
         "pretreatment": "range-scale"
     },
     {
        "name": "Stepwise Regression",
        "shortName": "SR",
        "numberOfIterations": 10,
-       "pretreatment": "mean-center",
-        "pretreatment": "range-scale"
+       "pretreatment": "mean-center"
+    },
+    {
+       "name": "Stepwise Regression",
+       "shortName": "SR",
+       "numberOfIterations": 10,
+       "pretreatment": "auto-scale"
+    },
+    {
+       "name": "Ridge Regression",
+       "shortName": "RR",
+       "numberOfIterations": 10,
+       "pretreatment": "range-scale"
     },
     {
        "name": "Ridge Regression",
@@ -107,16 +231,46 @@
        "pretreatment": "mean-center"
     },
     {
+       "name": "Ridge Regression",
+       "shortName": "RR",
+       "numberOfIterations": 10,
+       "pretreatment": "auto-scale"
+    },
+    {
+       "name": "Lasso Regression",
+       "shortName": "LR",
+       "numberOfIterations": 10,
+       "pretreatment": "range-scale"
+    },
+    {
        "name": "Lasso Regression",
        "shortName": "LR",
        "numberOfIterations": 10,
        "pretreatment": "mean-center"
     },
     {
+       "name": "Lasso Regression",
+       "shortName": "LR",
+       "numberOfIterations": 10,
+       "pretreatment": "auto-scale"
+    },
+     {
+       "name": "Elastic Regression",
+       "shortName": "ER",
+       "numberOfIterations": 10,
+       "pretreatment": "range-scale"
+    },
+    {
        "name": "Elastic Regression",
        "shortName": "ER",
        "numberOfIterations": 10,
        "pretreatment": "mean-center"
+    },
+   {
+       "name": "Elastic Regression",
+       "shortName": "ER",
+       "numberOfIterations": 10,
+       "pretreatment": "auto-scale"
     }
   ]
 }

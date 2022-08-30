@@ -29,7 +29,7 @@
 svm.run <- function(regressionParameterList){
         cat('svm.run \n')
 
-        preProcValues <- preProcess(regressionParameterList$dataSet, method = regressionParameterList$pretreatment )
+        preProcValues <- preProcess(regressionParameterList$dataSet, method = gePretreatmentVector(regressionParameterList$pretreatment))
         regressionParameterList$dataSet <- predict(preProcValues, regressionParameterList$dataSet)
         dataSet <- regressionParameterList$dataSet
 
@@ -38,10 +38,7 @@ svm.run <- function(regressionParameterList){
         trainIndexList <- createDataPartition(dataSet$TVC, p = regressionParameterList$percentageForTrainingSet,
                                               list = FALSE, times = regressionParameterList$numberOfIterations)
 
-        bestHyperParamsList<-c()
-        svmModelList <- vector(mode="list", length = regressionParameterList$numberOfIterations)
-        RMSEList <- vector(mode="list", length = regressionParameterList$numberOfIterations)
-        RSquareList <- vector(mode="list", length = regressionParameterList$numberOfIterations)
+        performanceResults <- vector(mode="list", length = regressionParameterList$numberOfIterations)
 
         # do things in parallel
        # svmModelList <- foreach(i=seq(1:regressionParameterList$numberOfIterations), .inorder=FALSE) %dopar% {
@@ -62,9 +59,6 @@ svm.run <- function(regressionParameterList){
                                         "gamma" = tuningResult$best.parameters["gamma"][1,1],
                                         "epsilon" = tuningResult$best.parameters["epsilon"][1,1])
 
-                # Tuning is called for each iteration seperately as the dataset differs in each iteration
-                # List of hyperparameters for each iteration is created
-                bestHyperParamsList <- c(bestHyperParamsList, bestHyperParams)
 
                 # svm model is created with the best hyperparameters for the current iteration
                 modelFit <- svm(trainSet, trainSet$TVC, type="eps-regression",
@@ -80,29 +74,9 @@ svm.run <- function(regressionParameterList){
 
                 # svm model with the performance metrics for the current iteration is appended to the svm model list
                 # svm model list contains all svm models for all iterations
-                svmModelList[[i]] <- list("model" = modelFit, "RMSE" = RMSE, "RSquare" = RSquare)
+                performanceResults[[i]] <- list( "RMSE" = RMSE, "RSquare" = RSquare, "bestHyperParams" = bestHyperParams)
         }
 
-        # RMSEList contains list of RMSE for each iteration
-        RMSEList <- unlist(lapply(svmModelList, function(x) x$RMSE))
-        meanRMSE <- round(mean(RMSEList), 4)
-        cumulativeMeanRMSEList <- cumsum(RMSEList) / seq_along(RMSEList)
-        names(cumulativeMeanRMSEList) <- seq_along(RMSEList)
-
-        # RSquareList contains list of RSquare for each iteration
-        RSquareList <- unlist(lapply(svmModelList, function(x) x$RSquare))
-        meanRSquare <- round(mean(RSquareList), 4)
-        cumulativeMeanRSquareList <- cumsum(RSquareList) / seq_along(RSquareList)
-        names(cumulativeMeanRSquareList) <- seq_along(RSquareList)
-
-        cat('svm mean RMSE: ', meanRMSE, '\n')
-        cat('svm mean RSquare: ', meanRSquare, '\n')
-
-        # Result object is returned to run.regression function in regression.R, which contains whole performance information for the machine learning model
-        result <- list("RMSEList"= RMSEList, "cumulativeMeanRMSEList" = cumulativeMeanRMSEList, "RMSE" = meanRMSE,
-                       "RSquareList" = RSquareList, "cumulativeMeanRSquareList" = cumulativeMeanRSquareList, "RSquare" = meanRSquare,
-                       "bestHyperParamsList" = bestHyperParamsList, method = regressionParameterList$method, platform = regressionParameterList$platform)
-
-        return(result)
+        return(createPerformanceStatistics(performanceResults, regressionParameterList))
 }
 
