@@ -165,7 +165,7 @@ readConfigFile<-function(configFile){
         if(is.null(config$outputDirectory) || is.na(config$outputDirectory))
                 config$outputDirectory = getwd()
 
-        config$outputDirectory = paste0(config$outputDirectory, "/BeefQualityAssessment-", Sys.time())
+        config$outputDirectory = paste0(config$outputDirectory, "/FoodQualityController-", Sys.time())
 
         # machinelearningmodels are parsed and a vector of machineLearningModels is created in different format
         # each machine leaarning model in the vector becomes string in the format of

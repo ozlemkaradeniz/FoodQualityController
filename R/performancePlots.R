@@ -68,18 +68,20 @@ generatePerformancePlots <- function(platformPerformanceResults, outputDir){
                 generatePlot <- FALSE
 
                 RmseListForMLM <- unlist(lapply(platformPerformanceResult$mlmPerformanceResults, function(x) x$RMSE))
+                # if the same ML method is called more than once, the list contains same ML method more than once
+                # (same ML method could called with different data pretreatment method or number of iteration)
+                # minRmseforMethod is defined below which contains unique ML methods with minimum RMSE for each
+                # performance plots same as heatmap should give unique ML with best performance
                 methodList <- unlist(lapply(platformPerformanceResult$mlmPerformanceResults, function(x) x$method))
                 data <- list(RMSE = RmseListForMLM, method = methodList)
                 minRmseforMethod <- aggregate(RMSE ~ method, data, function(x) min(x))
 
                 for(i in 1:length(platformPerformanceResult$mlmPerformanceResults)) {
                         mlmPerformanceResult <- platformPerformanceResult$mlmPerformanceResults[[i]]
-                        cat("method : " ,mlmPerformanceResult$method , "\n")
                         minRMSE <- minRmseforMethod[minRmseforMethod$method == mlmPerformanceResult$method,]$RMSE
                         mlmPerformanceResult$min <- FALSE
                         platformPerformanceResult$mlmPerformanceResults[[i]]$min<-FALSE
                         if(minRMSE == mlmPerformanceResult$RMSE){
-                                cat(mlmPerformanceResult$method , "min rmse ye esit ", mlmPerformanceResult$RMSE, " =  ", minRMSE, "\n")
                                 platformPerformanceResult$mlmPerformanceResults[[i]]$min<-TRUE
                                 if(is.null(mlmPerformanceResult$cumulativeMeanRMSEList) == FALSE){
                                         if(generatePlot == FALSE){
@@ -116,7 +118,7 @@ generatePerformancePlots <- function(platformPerformanceResults, outputDir){
 
                         generatePerformancePlot(data = mergedCumulativeRSquareList*100, plotName = paste0("RSquare Means for ", platformPerformanceResult$platform),
                                                 dataNames = mlmList,
-                                                file = paste(outputDir, "/", platformPerformanceResult$platform, "RSquare_Means.pdf", sep = ""))
+                                                file = paste(outputDir, "/", platformPerformanceResult$platform, "_RSquare_Means.pdf", sep = ""))
 
                 }
         }

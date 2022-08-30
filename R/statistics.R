@@ -56,6 +56,10 @@ generateStatistics <- function(platformPerformanceResults, outputDir, createStat
         Rmsedf$ML_Means <- round(rowMeans(Rmsedf[2:ncol(Rmsedf)], na.rm=TRUE),4)
         Rmsedf <- rbind(Rmsedf, c(NA, round(colMeans(Rmsedf[2:ncol(Rmsedf)], na.rm=TRUE),4)))
         rownames(Rmsedf)[nrow(Rmsedf)] <- "Platform_Means"
+        # if the same ML method is called more than once, Rmsedf contains same ML method more than once
+        # (same ML method could called with different data pretreatment method or number of iteration)
+        # Rmsedf_ForHeatMap is defined below which contains unique ML methods with minimum RMSE for each.
+        # heatmap should give unique ML with the best performance
         Rmsedf_ForHeatMap <- as.data.frame(Rmsedf %>% group_by(methodName) %>% filter(ML_Means == min(ML_Means)))
         Rmsedf <- Rmsedf[, -1]
         Rmsedf <- format(Rmsedf, nsmall = 4)
