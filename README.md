@@ -1,16 +1,16 @@
 # Summary
 
 
-BeefQualityAssessment is is a flexible and user-friendly R package that is used to identify, validate, and optimize the most suitable machine learning platform for the given analytical platform. Several machine learning models are created in the package to predict microbial quality in beef products.
+FoodQualityController is is a flexible and user-friendly R package that is used to identify, validate, and optimize the most suitable machine learning platform for the given analytical platform. Several machine learning models are created in the package to predict microbial quality in beef products.
 
 # Table of Contents
 
 -   [Summary](#summary)
 -   [Installation](#installation)
     -   [Dependencies](#dependencies)
-    -   [Install BeefQualityAssessment from source](#install-beefQualityAssessment-from-source)
+    -   [Install FoodQualityController from source](#install-foodQualityController-from-source)
 -   [Quick Start](#quick-start)
-    -   [Load BeefQualityAssessment](#load-beefQualityAssessment)
+    -   [Load FoodQualityController](#load-foodQualityController)
     -   [Reading application parameters from configuration file](#reading-application-parameters-from-configuration-file)
     -   [Reading data from input files](#reading-data-from-input-files)
     -   [Creating output files](#creating-output-files)
@@ -22,7 +22,7 @@ BeefQualityAssessment is is a flexible and user-friendly R package that is used 
 
 ## Dependencies
 
-BeefQualityAssessment needs the following:
+FoodQualityController needs the following:
 
 -   **R** (tested on version 4.1.1)
 -   **The following R libraries:** (The number is the version tested during development)
@@ -43,38 +43,38 @@ BeefQualityAssessment needs the following:
 
 **Note:** The package is platform-independent; it was developed and runs on multiple operating systems (Windows, MacOS, Linux).
 
-All dependencies should be installed together with the BeefQualityAssessment package, however, they can be installed separately. To install all required CRAN dependencies of BeefQualityAssessment, type the following in R:
+All dependencies should be installed together with the FoodQualityController package, however, they can be installed separately. To install all required CRAN dependencies of FoodQualityController, type the following in R:
 
 ```{r}
 install.packages(c("caret", "colorRamps", "Boruta", "corrplot", "doParallel", "e1071", "foreach", "glmnet", "mixOmics", "neuralnet" ,
 "openxlsx", "pls", "plyr", "randomForest", "rpart", "shape", "tools", "viridis", "xgboost"))
 ```
 
-## Install BeefQualityAssessment from source
+## Install FoodQualityController from source
 
-You can download the latest source tarball file (ending in .tar.gz) from the [latest release section](https://github.com/ozlemkaradeniz/BeefQualityAssessment/releases) on the [BeefQualityAssessment GitHub repository page](https://github.com/ozlemkaradeniz/BeefQualityAssessment).
+You can download the latest source tarball file (ending in .tar.gz) from the [latest release section](https://github.com/ozlemkaradeniz/FoodQualityController/releases) on the [FoodQualityController GitHub repository page](https://github.com/ozlemkaradeniz/FoodQualityController).
 
 Then to install this local source package type the following in R:
 
 ```{r}
 library(utils)
-install.packages("BeefQualityAssessment_1.0.0.tar.gz", repos = NULL, type = "source", dependencies=TRUE)
+install.packages("FoodQualityController_1.0.0.tar.gz", repos = NULL, type = "source", dependencies=TRUE)
 ```
 
 # Quick Start
 
-## Load BeefQualityAssessment
+## Load FoodQualityController
 
-Once the package is installed, to start using BeefQualityAssessment simply load the BeefQualityAssessment package in R:
+Once the package is installed, to start using FoodQualityController simply load the FoodQualityController package in R:
 
 ```{r}
-library(BeefQualityAssessment)
+library(FoodQualityController)
 ```
 
 ## Reading application parameters from configuration file
 
-BeefQualityAssessment can read configuration file in json format. 
-assess.quality which is the main function of BeefQualityAssessment takes name of the configuration file as parameter.
+FoodQualityController can read configuration file in json format. 
+assess.quality which is the main function of FoodQualityController takes name of the configuration file as parameter.
 Configuration file contains user-defined parameters which are required by the application.
 
 Example of a configuration files is as following:
@@ -147,17 +147,17 @@ Performance plots, pca plots for each platform are created in output directory.
  
 Statistics files with RMSE and RSquare performance metrics are created in output directory.
 
-## How to run BeefQualityAssessment
+## How to run FoodQualityController
 
-The main and only function that is exported to the user in BeefQualityAssessment package is assess.quality.
+The main and only function that is exported to the user in FoodQualityController package is assess.quality.
 
 It is called as following with configuration file name as method parameter.
 
-assess.quality("/Users/ozlemkaradeniz/Cranfield/BeefQualityAssessment/input/config.json")
+assess.quality("/Users/ozlemkaradeniz/Cranfield/FoodQualityController/input/config.json")
 
 # Accessing help
 
-To access help pages for any of the functions or built-in data provided by BeefQualityAssessment, prefix the name of the function or data set with a question mark, e.g. to get additional information on the `assess.quality` function, type the following in R:
+To access help pages for any of the functions or built-in data provided by FoodQualityController, prefix the name of the function or data set with a question mark, e.g. to get additional information on the `assess.quality` function, type the following in R:
 
 ```{r}
 ?assess.quality
@@ -165,5 +165,5 @@ To access help pages for any of the functions or built-in data provided by BeefQ
 
 # Questions, bug reports or issues
 
-For any questions, feature requests, bug reports or issues regarding the latest version of BeefQualityAssessment, please use the "[issues](https://github.com/ozlemkaradeniz/BeefQualityAssessment/issues)" tab located at the top-left of the GitHub repository page.
+For any questions, feature requests, bug reports or issues regarding the latest version of FoodQualityController, please use the "[issues](https://github.com/ozlemkaradeniz/FoodQualityController/issues)" tab located at the top-left of the GitHub repository page.
 

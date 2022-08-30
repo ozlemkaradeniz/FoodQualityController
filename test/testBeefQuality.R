@@ -1,4 +1,4 @@
-require(BeefQualityAssessment)
-assess.quality("/Users/ozlemkaradeniz/Cranfield/BeefQualityAssessment/input/config.json")
+require(FoodQualityController)
+assess.quality("/Users/ozlemkaradeniz/Cranfield/FoodQualityController/input/config.json")
 
 
