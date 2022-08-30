@@ -66,17 +66,31 @@ generatePerformancePlots <- function(platformPerformanceResults, outputDir){
                 mergedCumulativeRSquareList <- NULL
 
                 generatePlot <- FALSE
-                for(mlmPerformanceResult in platformPerformanceResult$mlmPerformanceResults){
+
+                RmseListForMLM <- unlist(lapply(platformPerformanceResult$mlmPerformanceResults, function(x) x$RMSE))
+                methodList <- unlist(lapply(platformPerformanceResult$mlmPerformanceResults, function(x) x$method))
+                data <- list(RMSE = RmseListForMLM, method = methodList)
+                minRmseforMethod <- aggregate(RMSE ~ method, data, function(x) min(x))
+
+                for(i in 1:length(platformPerformanceResult$mlmPerformanceResults)) {
+                        mlmPerformanceResult <- platformPerformanceResult$mlmPerformanceResults[[i]]
                         cat("method : " ,mlmPerformanceResult$method , "\n")
-                        if(is.null(mlmPerformanceResult$cumulativeMeanRMSEList) == FALSE){
-                                if(generatePlot == FALSE){
-                                        mergedCumulativeRMSEList <- dplyr::bind_rows(mlmPerformanceResult$cumulativeMeanRMSEList)
-                                        mergedCumulativeRSquareList <- dplyr::bind_rows(mlmPerformanceResult$cumulativeMeanRSquareList)
-                                        generatePlot <- TRUE
-                                }
-                                else{
-                                        mergedCumulativeRMSEList <- dplyr::bind_rows(mergedCumulativeRMSEList, mlmPerformanceResult$cumulativeMeanRMSEList)
-                                        mergedCumulativeRSquareList <- dplyr::bind_rows(mergedCumulativeRSquareList, mlmPerformanceResult$cumulativeMeanRSquareList)
+                        minRMSE <- minRmseforMethod[minRmseforMethod$method == mlmPerformanceResult$method,]$RMSE
+                        mlmPerformanceResult$min <- FALSE
+                        platformPerformanceResult$mlmPerformanceResults[[i]]$min<-FALSE
+                        if(minRMSE == mlmPerformanceResult$RMSE){
+                                cat(mlmPerformanceResult$method , "min rmse ye esit ", mlmPerformanceResult$RMSE, " =  ", minRMSE, "\n")
+                                platformPerformanceResult$mlmPerformanceResults[[i]]$min<-TRUE
+                                if(is.null(mlmPerformanceResult$cumulativeMeanRMSEList) == FALSE){
+                                        if(generatePlot == FALSE){
+                                                mergedCumulativeRMSEList <- dplyr::bind_rows(mlmPerformanceResult$cumulativeMeanRMSEList)
+                                                mergedCumulativeRSquareList <- dplyr::bind_rows(mlmPerformanceResult$cumulativeMeanRSquareList)
+                                                generatePlot <- TRUE
+                                        }
+                                        else{
+                                                mergedCumulativeRMSEList <- dplyr::bind_rows(mergedCumulativeRMSEList, mlmPerformanceResult$cumulativeMeanRMSEList)
+                                                mergedCumulativeRSquareList <- dplyr::bind_rows(mergedCumulativeRSquareList, mlmPerformanceResult$cumulativeMeanRSquareList)
+                                        }
                                 }
                         }
                 }
@@ -91,8 +105,8 @@ generatePerformancePlots <- function(platformPerformanceResults, outputDir){
 
                         mlmList <- unlist(lapply(platformPerformanceResult$mlmPerformanceResults,
                                                  function(x){
-                                                         if(!is.null(x$cumulativeMeanRMSEList))
-                                                                 x$method
+                                                         if(!is.null(x$cumulativeMeanRMSEList) && x$min == TRUE)
+                                                                 return(x$method)
                                                  }))
 
                         generatePerformancePlot(data = mergedCumulativeRMSEList*100, plotName = paste0("RMSE Means for ", platformPerformanceResult$platform),

@@ -18,7 +18,7 @@
 XGBoost.run <- function(regressionParameterList){
         cat('run.XGBoost \n')
 
-        preProcValues <- preProcess(regressionParameterList$dataSet, method = regressionParameterList$pretreatment )
+        preProcValues <- preProcess(regressionParameterList$dataSet, method = gePretreatmentVector(regressionParameterList$pretreatment))
         regressionParameterList$dataSet <- predict(preProcValues, regressionParameterList$dataSet)
         dataSet <- regressionParameterList$dataSet
 
@@ -61,10 +61,12 @@ XGBoost.run <- function(regressionParameterList){
         modelRSquare <- RSQUARE(test_y, pred_y)
         modelRSquare <- round(modelRSquare, 4)
 
-        result <- list("RMSE" = modelRMSE, "RSquare" = modelRSquare, method = regressionParameterList$method, platform = regressionParameterList$platform)
+        result <- list("RMSE" = modelRMSE, "RSquare" = modelRSquare, method = regressionParameterList$method, platform = regressionParameterList$platform,
+                       "pretreatment" = regressionParameterList$pretreatment)
 
         return (result)
 }
+
 
 run.XGBoost_v2 <- function(method,dataAll){
         require(xgboost)

@@ -72,13 +72,15 @@ regressionTree.run <- function(regressionParameterList){
 
         dataSet <- regressionParameterList$dataSet
 
+        # pretreatment method is overriden to no_pretreatment in case it has been set by user
+        # there is no need for data pretreatment  before regression tree
+        regressionParameterList$pretreatment = "no_pretreatment"
+
         set.seed(1821)
         trainIndexList <- createDataPartition(dataSet$TVC, p = regressionParameterList$percentageForTrainingSet,
                                               list = FALSE, times = regressionParameterList$numberOfIterations)
 
-        modelList <- vector(mode="list", length = regressionParameterList$numberOfIterations)
-        RMSEList <- vector(mode="list", length = regressionParameterList$numberOfIterations)
-        RSquareList <- vector(mode="list", length = regressionParameterList$numberOfIterations)
+        performanceResults <- vector(mode="list", length = regressionParameterList$numberOfIterations)
 
         # do things in parallel
         #modelList <- foreach(i=seq(1:regressionParameterList$numberOfIterations), .inorder=FALSE) %dopar% {
@@ -95,23 +97,8 @@ regressionTree.run <- function(regressionParameterList){
                 RMSE <- pruneResult$RMSE
                 RSquare <- pruneResult$RSquare
 
-                modelList[[i]] <- list("model" = pruneResult, "RMSE" = RMSE, "RSquare" = RSquare)
+                performanceResults[[i]] <- list("RMSE" = RMSE, "RSquare" = RSquare)
         }
 
-        RMSEList <- unlist(lapply(modelList, function(x) x$RMSE))
-        meanRMSE <- round(mean(RMSEList), 4)
-        cumulativeMeanRMSEList <- cumsum(RMSEList) / seq_along(RMSEList)
-        names(cumulativeMeanRMSEList) <- seq_along(RMSEList)
-
-        RSquareList <- unlist(lapply(modelList, function(x) x$RSquare))
-        meanRSquare <- round(mean(RSquareList), 4)
-        cumulativeMeanRSquareList <- cumsum(RSquareList) / seq_along(RSquareList)
-        names(cumulativeMeanRSquareList) <- seq_along(RSquareList)
-
-        cat('Regression Tree mean RMSE: ', meanRMSE, '\n')
-        cat('Regression Tree RSquare: ', meanRSquare, '\n')
-        result <- list("RMSEList"= RMSEList, "cumulativeMeanRMSEList" = cumulativeMeanRMSEList, "RMSE" = meanRMSE,
-                       "RSquareList" = RSquareList, "cumulativeMeanRSquareList" = cumulativeMeanRSquareList, "RSquare" = meanRSquare,
-                       method = regressionParameterList$method, platform = regressionParameterList$platform)
-        return(result)
+        return(createPerformanceStatistics(performanceResults, regressionParameterList))
 }

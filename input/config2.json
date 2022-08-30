@@ -1,21 +1,91 @@
 {
-  "name": "Input configuration file for BeefAssignment",
-  "outputDirectory": "/Users/ozlemkaradeniz/Cranfield/Thesis/output",
-  "createStatisticsFile" : true,
-  "createPerformancePlots": true,
-  "createPCAPlots": true,
-  "platformList" : [
-    {
-       "platformName": "freshdetect",
-       "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/freshdetect_beef_air_spoilage_GM_ok.xlsx"
-    }
-  ],
-  "machineLearningModels" : [
-    {
-       "name": "PLS",
-       "shortName": "PLS",
-       "numberOfIterations": 10,
-       "proportionOfTrainingSet": 0.7
-    }
-  ]
+        "name": "Input configuration file for BeefAssignment",
+        "outputDirectory": "/Users/ozlemkaradeniz/Cranfield/Thesis/output",
+        "createStatisticsFile" : true,
+        "createPerformancePlots": true,
+        "createPCAPlots": true,
+        "platformList" : [
+                {
+                        "platformName": "VideometerLab",
+                        "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/MSI_beef_air_spoilage_GM_OK.xlsx"
+                },
+                {
+                        "platformName": "ENOSE",
+                        "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/enose_beef_air_spoilage_GM_OK.xlsx"
+                },
+                {
+                        "platformName": "FTIR",
+                        "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/FTIR_beef_air_spoilage_GM_ok.xlsx"
+                }
+        ],
+        "machineLearningModels" : [
+                {
+                        "name": "Neural Network",
+                        "shortName": "NN",
+                        "numberOfIterations": 10,
+                        "proportionOfTrainingSet": 0.7,
+                        "pretreatment": "range-scale"
+                },
+                {
+                        "name": "Neural Network",
+                        "shortName": "NN",
+                        "numberOfIterations": 10,
+                        "proportionOfTrainingSet": 0.7,
+                        "pretreatment": "mean-center"
+                },
+                {
+                        "name": "Neural Network",
+                        "shortName": "NN",
+                        "numberOfIterations": 10,
+                        "proportionOfTrainingSet": 0.7,
+                        "pretreatment": "auto-scale"
+                },
+                {
+                        "name": "k-nearest neighbors",
+                        "shortName": "KNN",
+                        "numberOfIterations": 10,
+                        "proportionOfTrainingSet": 0.7,
+                        "pretreatment": "range-scale"
+                },
+                {
+                        "name": "k-nearest neighbors",
+                        "shortName": "KNN",
+                        "numberOfIterations": 10,
+                        "proportionOfTrainingSet": 0.7,
+                        "pretreatment": "mean-center"
+                },
+                {
+                        "name": "k-nearest neighbors",
+                        "shortName": "KNN",
+                        "numberOfIterations": 10,
+                        "proportionOfTrainingSet": 0.7,
+                        "pretreatment": "auto-scale"
+                },
+                {
+                        "name": "Regression Tree",
+                        "shortName": "RT",
+                        "numberOfIterations": 10
+                },
+                    {
+                       "name": "Partial least squares Regression",
+                       "shortName": "PLS",
+                       "numberOfIterations": 10,
+                       "proportionOfTrainingSet": 0.7,
+                        "pretreatment": "range-scale"
+                    },
+                    {
+                       "name": "Partial least squares Regression",
+                       "shortName": "PLS",
+                       "numberOfIterations": 10,
+                       "proportionOfTrainingSet": 0.7,
+                        "pretreatment": "mean-center"
+                    },
+                    {
+                       "name": "Partial least squares Regression",
+                       "shortName": "PLS",
+                       "numberOfIterations": 10,
+                       "proportionOfTrainingSet": 0.7,
+                        "pretreatment": "auto-scale"
+                    }
+        ]
 }

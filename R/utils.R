@@ -110,7 +110,7 @@ getRegressionParameters <- function(mlm, dataSet, platform){
                 mlmParams[5] <- defDirectionInStepwiseRegression
 
         # regressionParameterList object contains all necessary infırmation for a machine learning model to run
-        regressionParameterList <- list("method" = mlmParams[1], "pretreatment" =  gePretreatmentVector(mlmParams[2]), "numberOfIterations" = as.numeric(mlmParams[3]),
+        regressionParameterList <- list("method" = mlmParams[1], "pretreatment" =  mlmParams[2], "numberOfIterations" = as.numeric(mlmParams[3]),
                                         "percentageForTrainingSet" = as.numeric(mlmParams[4]), dataSet = dataSet, "platform" = platform, "direction" = mlmParams[5])
 
         return(regressionParameterList)
@@ -187,9 +187,9 @@ readConfigFile<-function(configFile){
                  if(is.null(mlmConfig$direction[i]) || is.na(mlmConfig$direction[i]) )
                         mlmConfig$direction[i] <- defDirectionInStepwiseRegression
 
+
                 mlmList <- c(mlmList, paste0(mlmConfig$shortName[i], ":" , mlmConfig$pretreatment[i], ":",
-                                             mlmConfig$numberOfIterations[i], ":" ,mlmConfig$proportionOfTrainingSet[i], ":",
-                                             mlmConfig$direction[i], ":"))
+                                             mlmConfig$numberOfIterations[i], ":" ,mlmConfig$proportionOfTrainingSet[i], ":"))
         }
 
         config$machineLearningModels <- mlmList
@@ -243,6 +243,39 @@ readDataset<-function(dataFileName){
          }
 
         return(dataSet)
+}
+
+createPerformanceStatistics <- function(performanceResults, regressionParameterList){
+        # RMSEList contains list of RMSE for each iteration
+        RMSEList <- vector(mode="list", length = regressionParameterList$numberOfIterations)
+        RSquareList <- vector(mode="list", length = regressionParameterList$numberOfIterations)
+
+        RMSEList <- unlist(lapply(performanceResults, function(x) x$RMSE))
+        meanRMSE <- round(mean(RMSEList), 4)
+        cumulativeMeanRMSEList <- cumsum(RMSEList) / seq_along(RMSEList)
+        names(cumulativeMeanRMSEList) <- seq_along(RMSEList)
+
+        # RSquareList contains list of RSquare for each iteration
+        RSquareList <- unlist(lapply(performanceResults, function(x) x$RSquare))
+        meanRSquare <- round(mean(RSquareList), 4)
+        cumulativeMeanRSquareList <- cumsum(RSquareList) / seq_along(RSquareList)
+        names(cumulativeMeanRSquareList) <- seq_along(RSquareList)
+
+        bestHyperParamsList <- NULL
+        if(!is.null(performanceResults[[1]]$bestHyperParams))
+                bestHyperParamsList <- unlist(lapply(performanceResults, function(x) x$bestHyperParams))
+
+
+        regressionParameterList$methodWithDataScaling <- paste0(regressionParameterList$method, "(", regressionParameterList$pretreatment,  ")")
+
+        cat(paste0(regressionParameterList$method, "(", regressionParameterList$pretreatment,  ") mean RMSE: ", meanRMSE, '\n'))
+        cat(paste0(regressionParameterList$method, "(", regressionParameterList$pretreatment,  ") mean RSquare: ", meanRSquare, '\n'))
+
+        # Result object is returned to run.regression function in regression.R, which contains whole performance information for the machine learning model
+        result <- list("RMSEList"= RMSEList, "cumulativeMeanRMSEList" = cumulativeMeanRMSEList, "RMSE" = meanRMSE,
+                       "RSquareList" = RSquareList, "cumulativeMeanRSquareList" = cumulativeMeanRSquareList, "RSquare" = meanRSquare,
+                       "bestHyperParamsList" = bestHyperParamsList, method = regressionParameterList$method, platform = regressionParameterList$platform,
+                       "pretreatment" = regressionParameterList$pretreatment)
 }
 
 #' selectFeatures

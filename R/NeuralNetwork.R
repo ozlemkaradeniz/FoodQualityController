@@ -17,9 +17,8 @@
 #' \dontrun{neuralNetwork.run(regressionParameterList)}
 
 neuralNetwork.run <- function(regressionParameterList){
-        cat(paste0('neuralNetwork.run for platform 222 = ', regressionParameterList$platform, " \n"))
 
-        preProcValues <- preProcess(regressionParameterList$dataSet, method = regressionParameterList$pretreatment )
+        preProcValues <- preProcess(regressionParameterList$dataSet, method = gePretreatmentVector(regressionParameterList$pretreatment))
         regressionParameterList$dataSet <- predict(preProcValues, regressionParameterList$dataSet)
         dataSet <- regressionParameterList$dataSet
 
@@ -27,10 +26,7 @@ neuralNetwork.run <- function(regressionParameterList){
         trainIndexList <- createDataPartition(dataSet$TVC, p = regressionParameterList$percentageForTrainingSet,
                                           list = FALSE, times = regressionParameterList$numberOfIterations)
 
-        nnModelList <- vector(mode="list", length = regressionParameterList$numberOfIterations)
-        RMSEList <- vector(mode="list", length = regressionParameterList$numberOfIterations)
-        RSquareList <- vector(mode="list", length = regressionParameterList$numberOfIterations)
-        regressionParameterList$numberOfIterations<-10
+        performanceResults <- vector(mode="list", length = regressionParameterList$numberOfIterations)
 
         # do things in parallel
         #nnModelList <- foreach(i=seq(1:regressionParameterList$numberOfIterations), .inorder=FALSE) %dopar% {
@@ -40,7 +36,8 @@ neuralNetwork.run <- function(regressionParameterList){
                 testSet <- dataSet[-trainIndexList[,i],]
 
                 modelFit <- neuralnet(TVC ~ . ,
-                               data = as.matrix(trainSet))
+                               data = as.matrix(trainSet),
+                               hidden=10, threshold=0.04, act.fct="tanh", linear.output=TRUE, stepmax=1e7)
 
                 predictedValues <- predict(modelFit, as.matrix(testSet))
 
@@ -48,31 +45,10 @@ neuralNetwork.run <- function(regressionParameterList){
                 RMSE<- RMSE(testSet$TVC, predictedValues)
                 RSquare <- RSQUARE(testSet$TVC, predictedValues)
 
-                nnModelList[[i]] <- list("model" = modelFit, "RMSE" = RMSE, "RSquare" = RSquare)
+                performanceResults[[i]] <- list("RMSE" = RMSE, "RSquare" = RSquare)
 
         }
 
-        # RMSEList contains list of RMSE for each iteration
-        RMSEList <- unlist(lapply(nnModelList, function(x) x$RMSE))
-        meanRMSE <- round(mean(RMSEList), 4)
-        cumulativeMeanRMSEList <- cumsum(RMSEList) / seq_along(RMSEList)
-        names(cumulativeMeanRMSEList) <- seq_along(RMSEList)
-
-        # RSquareList contains list of RSquare for each iteration
-        RSquareList <- unlist(lapply(nnModelList, function(x) x$RSquare))
-        meanRSquare <- round(mean(RSquareList), 4)
-        cumulativeMeanRSquareList <- cumsum(RSquareList) / seq_along(RSquareList)
-        names(cumulativeMeanRSquareList) <- seq_along(RSquareList)
-
-        cat('Neural Network mean RMSE: ', meanRMSE, '\n')
-        cat('Neural Network  mean RSquare: ', meanRSquare, '\n')
-
-        # Result object is returned to run.regression function in regression.R, which contains whole performance information for the machine learning model
-        result <- list("RMSEList"= RMSEList, "cumulativeMeanRMSEList" = cumulativeMeanRMSEList, "RMSE" = meanRMSE,
-                       "RSquareList" = RSquareList, "cumulativeMeanRSquareList" = cumulativeMeanRSquareList, "RSquare" = meanRSquare,
-                        method = regressionParameterList$method, platform = regressionParameterList$platform)
-
-
-        return(result)
+        return(createPerformanceStatistics(performanceResults, regressionParameterList))
 
 }

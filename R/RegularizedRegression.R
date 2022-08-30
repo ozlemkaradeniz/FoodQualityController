@@ -31,7 +31,7 @@ regularizedRegression.run <- function(regressionParameterList){
 
         # In regression, it is often recommended to scale the features to make it easier to interpret the intercept term.
         # Scaling type is supplied by the user
-        preProcValues <- preProcess(regressionParameterList$dataSet, method = regressionParameterList$pretreatment )
+        preProcValues <- preProcess(regressionParameterList$dataSet, method = gePretreatmentVector(regressionParameterList$pretreatment))
         regressionParameterList$dataSet <- predict(preProcValues, regressionParameterList$dataSet)
         dataSet <- regressionParameterList$dataSet
 
@@ -40,10 +40,7 @@ regularizedRegression.run <- function(regressionParameterList){
         trainIndexList <- createDataPartition(dataSet$TVC, p = regressionParameterList$percentageForTrainingSet,
                                               list = FALSE, times = regressionParameterList$numberOfIterations)
 
-        bestHyperParamsList<-c()
-        modelList <- vector(mode="list", length = regressionParameterList$numberOfIterations)
-        RMSEList <- vector(mode="list", length = regressionParameterList$numberOfIterations)
-        RSquareList <- vector(mode="list", length = regressionParameterList$numberOfIterations)
+        performanceResults <- vector(mode="list", length = regressionParameterList$numberOfIterations)
 
         # do things in parallel
         #modelList <- foreach(i=seq(1:regressionParameterList$numberOfIterations), .inorder=FALSE) %dopar% {
@@ -76,7 +73,6 @@ regularizedRegression.run <- function(regressionParameterList){
                 modelFit <- glmnet(trainMx, trainTarget, alpha = alpha, lambda = cvFit$lambda.min)
 
                 bestHyperParams <- list(lambda=cvFit$lambda.min)
-                bestHyperParamsList <- c(bestHyperParamsList, bestHyperParams)
 
                 # Using testSet the model predicts TVC values
                 predictedValues <- predict(modelFit,  newx = testMx)
@@ -85,28 +81,9 @@ regularizedRegression.run <- function(regressionParameterList){
                 RMSE<- RMSE(testSet$TVC, predictedValues)
                 RSquare <- RSQUARE(testSet$TVC, predictedValues)
 
-                modelList[[i]] <- list("model" = modelFit, "RMSE" = RMSE, "RSquare" = RSquare)
+                performanceResults[[i]] <- list("RMSE" = RMSE, "RSquare" = RSquare, "bestHyperParams" = bestHyperParams)
 
         }
 
-        # RMSEList contains list of RMSE for each iteration
-        RMSEList <- unlist(lapply(modelList, function(x) x$RMSE))
-        meanRMSE <- round(mean(RMSEList), 4)
-        cumulativeMeanRMSEList <- cumsum(RMSEList) / seq_along(RMSEList)
-        names(cumulativeMeanRMSEList) <- seq_along(RMSEList)
-
-        # RSquareList contains list of RSquare for each iteration
-        RSquareList <- unlist(lapply(modelList, function(x) x$RSquare))
-        meanRSquare <- round(mean(RSquareList), 4)
-        cumulativeMeanRSquareList <- cumsum(RSquareList) / seq_along(RSquareList)
-        names(cumulativeMeanRSquareList) <- seq_along(RSquareList)
-
-        cat(paste0(regressionParameterList$method,' mean RMSE: ', meanRMSE, '\n'))
-        cat(paste0(regressionParameterList$method,' mean RSquare: ', meanRSquare, '\n'))
-
-        # Result object is returned to run.regression function in regression.R, which contains whole performance information for the machine learning model
-        result <- list("RMSEList"= RMSEList, "cumulativeMeanRMSEList" = cumulativeMeanRMSEList, "RMSE" = meanRMSE,
-                       "RSquareList" = RSquareList, "cumulativeMeanRSquareList" = cumulativeMeanRSquareList, "RSquare" = meanRSquare,
-                       "bestHyperParamsList" = bestHyperParamsList, method = regressionParameterList$method, platform = regressionParameterList$platform)
-        return(result)
+        return(createPerformanceStatistics(performanceResults, regressionParameterList))
 }

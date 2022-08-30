@@ -4,7 +4,7 @@
 #' @author Ozlem Karadeniz \email{ozlem.karadeniz.283@@cranfield.ac.uk}
 #' @param configParams  list containing parameters provided in config json file
 #' by the user
-#' @import foreach
+#' @import foreach R.utils
 #'
 #' @examples
 #' \dontrun{run.analysis(configParams)}
@@ -42,11 +42,34 @@ run.analysis <- function(configParams){
                         regressionParameterList <- getRegressionParameters(mlm,dataSet, platformList[i] )
                         dataSet<-regressionParameterList$dataSet
 
-                        # according to method parameter of regressionParameterList different machine learning model is exccuted in  run.regression
+                        # according to method parameter of regressionParameterList different machine learning model is executed in  run.regression
+                        # mlmPerformanceResult <- tryCatch(
+                        #                 {
+                        #                         #withTimeout(run.regression(regressionParameterList), timeout = 10000, onTimeout = "silent")
+                        #                         run.regression(regressionParameterList)
+                        #                 },
+                        #                 error=function(cond) {
+                        #                         message(cond)
+                        #                         print(sys.calls())
+                        #                         return(NULL)
+                        #                 }
+                        #         )
+
+
                         mlmPerformanceResult <- run.regression(regressionParameterList)
+                        if(is.null(mlmPerformanceResult)){
+                                cat("For ", platformList[i], " Timeout Exception in ", regressionParameterList$method , "(",
+                                    regressionParameterList$pretreatment, ")\n")
+
+                                mlmPerformanceResult <- list("RMSE" = NA,"RSquare" = NA, method = regressionParameterList$method,
+                                                             pretreatment = regressionParameterList$pretreatment, platform = regressionParameterList$platform)
+                                mlmPerformanceResults[[j]]  <- mlmPerformanceResult
+                                next
+
+                        }
 
                         # Through the loop best machine learning model is found according to RMSE performance metric
-                        if(mlmPerformanceResult$RMSE < bestRMSE){
+                        if(!is.null(mlmPerformanceResult) && mlmPerformanceResult$RMSE < bestRMSE){
                              bestRSquare <- mlmPerformanceResult$RSquare
                              bestRMSE <- mlmPerformanceResult$RMSE
                              bestMLM <- mlmPerformanceResult$method
