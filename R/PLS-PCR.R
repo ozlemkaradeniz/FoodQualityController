@@ -39,7 +39,6 @@ pls.pcr.run<- function(regressionParameterList){
 
         performanceResults <- vector(mode="list", length = regressionParameterList$numberOfIterations)
 
-        #modelList <- foreach(i=seq(1:regressionParameterList$numberOfIterations), .inorder=FALSE) %dopar% {
         for(i in 1:regressionParameterList$numberOfIterations) {
                 # training set and test set are created
                 trainSet <- dataSet[trainIndexList[,i],]

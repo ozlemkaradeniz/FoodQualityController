@@ -82,8 +82,6 @@ regressionTree.run <- function(regressionParameterList){
 
         performanceResults <- vector(mode="list", length = regressionParameterList$numberOfIterations)
 
-        # do things in parallel
-        #modelList <- foreach(i=seq(1:regressionParameterList$numberOfIterations), .inorder=FALSE) %dopar% {
         for(i in 1:regressionParameterList$numberOfIterations) {
                 trainSet <- dataSet[trainIndexList[,i],]
                 testSet <- dataSet[-trainIndexList[,i],]

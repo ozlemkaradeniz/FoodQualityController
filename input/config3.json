@@ -1,0 +1,37 @@
+{
+  "name": "Input configuration file for BeefAssignment",
+  "outputDirectory": "/Users/ozlemkaradeniz/Cranfield/Thesis/output",
+  "createStatisticsFile" : true,
+  "createPerformancePlots": true,
+  "createPCAPlots": true,
+  "platformList" : [
+    {
+       "platformName": "VideometerLab",
+       "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/MSI/MSI_mincedbeef_map_TVC.xlsx"
+    },
+    {
+       "platformName": "ENOSE",
+       "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/enose/enose_mincedbeef_map_TVC.xlsx"
+    },
+    {
+       "platformName": "FTIR",
+       "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/FTIR/FTIR_mincedbeef_map_TVC.xlsx"
+    },
+    {
+       "platformName": "Fresh Detect",
+       "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/freshdetect/freshdetect_mincedbeef_map_TVC.xlsx"
+    },
+    {
+       "platformName": "VideometerLabUV",
+       "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/MSIF/MSIF_mincedbeef_map_TVC.csv"
+    }
+  ],
+  "machineLearningModels" : [
+    {
+       "name": "Random Forest",
+       "shortName": "RFR",
+       "numberOfIterations": 10,
+       "proportionOfTrainingSet": 0.7
+    }
+  ]
+}

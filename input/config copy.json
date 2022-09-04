@@ -7,23 +7,23 @@
   "platformList" : [
     {
        "platformName": "VideometerLab",
-       "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/MSI/MSI_mincedbeef_map_TVC.xlsx"
+       "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/MSI_beef_air_spoilage_GM_OK.xlsx"
     },
     {
        "platformName": "ENOSE",
-       "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/enose/enose_mincedbeef_map_TVC.xlsx"
+       "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/enose_beef_air_spoilage_GM_OK.xlsx"
     },
     {
        "platformName": "FTIR",
-       "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/FTIR/FTIR_mincedbeef_map_TVC.xlsx"
+       "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/FTIR_beef_air_spoilage_GM_ok.xlsx"
     },
     {
        "platformName": "Fresh Detect",
-       "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/freshdetect/freshdetect_mincedbeef_map_TVC.xlsx"
+       "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/freshdetect_beef_air_spoilage_GM_ok.xlsx"
     },
     {
        "platformName": "VideometerLabUV",
-       "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/MSIF/MSIF_mincedbeef_map_TVC.csv"
+       "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/MSIF_beef_air_spoilage_GM_ok.csv"
     }
   ],
   "machineLearningModels" : [
@@ -70,22 +70,22 @@
        "pretreatment": "auto-scale"
     },
     {
-       "name": "SVR-Radial",
-       "shortName": "SVR-Radial",
+       "name": "SVM-Radial",
+       "shortName": "SVM-Radial",
        "numberOfIterations": 10,
        "proportionOfTrainingSet": 0.7,
         "pretreatment": "range-scale"
     },
     {
-       "name": "SVR-Radial",
-       "shortName": "SVR-Radial",
+       "name": "SVM-Radial",
+       "shortName": "SVM-Radial",
        "numberOfIterations": 10,
        "proportionOfTrainingSet": 0.7,
         "pretreatment": "mean-center"
     },
     {
-       "name": "SVR-Radial",
-       "shortName": "SVR-Radial",
+       "name": "SVM-Radial",
+       "shortName": "SVM-Radial",
        "numberOfIterations": 10,
        "proportionOfTrainingSet": 0.7,
         "pretreatment": "auto-scale"
@@ -105,8 +105,8 @@
         "pretreatment": "mean-center"
     },
     {
-       "name": "SVR-Polynomial",
-       "shortName": "SVR-Polynomial",
+       "name": "SVM-Polynomial",
+       "shortName": "SVM-Polynomial",
        "numberOfIterations": 10,
        "proportionOfTrainingSet": 0.7,
         "pretreatment": "auto-scale"

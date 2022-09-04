@@ -6,6 +6,7 @@ FoodQualityController is is a flexible and user-friendly R package that is used 
 # Table of Contents
 
 -   [Summary](#summary)
+-   [FoodQualityController workflow](#foodQualityController-workflow)
 -   [Installation](#installation)
     -   [Dependencies](#dependencies)
     -   [Install FoodQualityController from source](#install-foodQualityController-from-source)
@@ -17,6 +18,9 @@ FoodQualityController is is a flexible and user-friendly R package that is used 
 -   [Acessing help](#accessing-help)
 -   [Questions, bug reports or issues](#questions-bug-reports-or-issues)
 
+# FoodQualityController workflow
+
+The typical workflow of FoodQualityController is outlined below: <img src="images/Flowchart.png" width="600"/>
 
 # Installation
 
@@ -77,59 +81,9 @@ FoodQualityController can read configuration file in json format.
 assess.quality which is the main function of FoodQualityController takes name of the configuration file as parameter.
 Configuration file contains user-defined parameters which are required by the application.
 
-Example of a configuration files is as following:
+Example of a input files is as following:
 
-{
-  "name": "Input configuration file for BeefAssignment",
-  "outputDirectory": "/Users/ozlemkaradeniz/Cranfield/Thesis/output",
-  "createStatisticsFile" : true,
-  "createPerformancePlots": true,
-  "createPCAPlots": true,
-  "platformList" : [
-    {
-       "platformName": "MSI",
-       "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/MSI_beef_air_spoilage_GM_OK.xlsx"
-    },
-    {
-       "platformName": "ENOSE",
-       "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/enose_beef_air_spoilage_GM_OK.xlsx"
-    },
-    {
-       "platformName": "FTIR",
-       "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/FTIR_beef_air_spoilage_GM_ok.xlsx"
-    },
-    {
-       "platformName": "freshdetect",
-       "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/freshdetect_beef_air_spoilage_GM_ok.xlsx"
-    },
-    {
-       "platformName": "MSIF",
-       "dataFileName": "/Users/ozlemkaradeniz/Cranfield/Thesis/data/MSIF_beef_air_spoilage_GM_ok.csv"
-    }
-  ],
-  "machineLearningModels" : [
-    {
-       "name": "Ordinary Least Squares Regression",
-       "shortName": "OLSR",
-       "numberOfIterations": 10,
-       "pretreatment": "mean-center"
-    },
-    {
-       "name": "Neural Network",
-       "shortName": "NN",
-       "numberOfIterations": 1,
-       "proportionOfTrainingSet": 0.7,
-       "pretreatment": "range-scale"
-    },
-    {
-       "name": "k-nearest neighbors",
-       "shortName": "KNN",
-       "numberOfIterations": 80,
-       "proportionOfTrainingSet": 0.7,
-       "pretreatment": "range-scale"
-    }
-  ]
-}
+ <img src="images/input_file_example.png" alt="example input file" width="400"/>
 
 
 ## Reading data from input files
@@ -140,12 +94,13 @@ platformList tag in the configuration file, for more details see in 'Input confi
 
 ## Creating output files
 
-Output directory is provided in outputDirectory section of configuration file by the user. If it is not provided, output directory
-becomes current directory which the application runs.
+Output directory is provided in outputDirectory section of configuration file by the user. If it is not provided, the output directory becomes the current working directory. 
 
-Performance plots, pca plots for each platform are created in output directory.
- 
-Statistics files with RMSE and RSquare performance metrics are created in output directory.
+PCA plots for each platform are created in the output directory. 
+
+Moreover, performance plots which give the evolution of the performance of machine learning algorithms through the iterations are created in the output directory. 
+
+Lastly, statistics tables with RMSE and RSquare performance metrics and heatmaps which contain the ranking of machine learning algorithms in terms of RMSE are created in the output directory. 
 
 ## How to run FoodQualityController
 

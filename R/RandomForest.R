@@ -51,7 +51,7 @@ randomForest.run <- function(regressionParameterList){
                 testSet_x<-testSet[,names(testSet)!="TVC"]
 
                 # Starting with the default value of mtry, search for the optimal value (with respect to Out-of-Bag error estimate) of mtry for randomForest.
-                tuningResult <- tuneRF(trainSet_x, trainSet_y, , ntreeTry=1000, stepFactor=1.1, improve=0.0000001,
+                tuningResult <- tuneRF(trainSet_x, trainSet_y, , ntreeTry=5000, stepFactor=1.1, improve=0.0000001,
                                        trace=TRUE, plot=TRUE, doBest=TRUE)
 
                 # list of bestHyperParams is created with best hyperparameters
