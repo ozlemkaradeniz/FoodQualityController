@@ -118,16 +118,16 @@ run.regression <- function(regressionParameterList){
         cat('run.regression is starting \n')
         cat(paste0("mehod name : ", method, "\n"))
         result<-NULL
-        if(method == "SVM-Radial"){
-                cat('svm.run is starting \n')
+        if(method == "SVR-Radial"){
+                cat('svr.run is starting \n')
                 regressionParameterList$kernel <- "radial"
-                result<-svm.run(regressionParameterList)
+                result<-svr.run(regressionParameterList)
                 regressionParameterList<-within(regressionParameterList, rm(kernel))
         }
-        if(method == "SVM-Polynomial"){
-                cat('svm.run is starting \n')
+        if(method == "SVR-Polynomial"){
+                cat('svr.run is starting \n')
                 regressionParameterList$kernel <- "polynomial"
-                result<-svm.run(regressionParameterList)
+                result<-svr.run(regressionParameterList)
                 regressionParameterList<-within(regressionParameterList, rm(kernel))
 
         }

@@ -14,7 +14,7 @@
 #'
 generateStatistics <- function(platformPerformanceResults, outputDir, createStatisticsFile){
 
-        mlmLongDesc = list("NN" = "Neural Network", "SVM-Radial" = "SVM-Radial", "SVM-Polynomial" = "SVM-Polynomial",
+        mlmLongDesc = list("NN" = "Neural Network", "SVR-Radial" = "SVR-Radial", "SVR-Polynomial" = "SVR-Polynomial",
                            "KNN" = "k-nearest neighbors", "RFR" = "Random Forest",
                            "PLS" = "Partial least squares Regression", "PCR" = "PCA Regression", "OLS"= "Ordinary Least Squares Regression" ,
                            "SR" = "Stepwise Regression", "RR" ="Ridge Regression","LR" = "Lasso Regression", "ER" = "Elastic Regression",

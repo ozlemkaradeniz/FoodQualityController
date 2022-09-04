@@ -42,8 +42,6 @@ knn.run <- function(regressionParameterList){
 
         performanceResults <- vector(mode="list", length = regressionParameterList$numberOfIterations)
 
-        # do things in parallel
-        #knnModelList <- foreach(i=seq(1:regressionParameterList$numberOfIterations), .inorder=FALSE) %dopar% {
         for(i in 1:regressionParameterList$numberOfIterations) {
                 # training set and test set are created
                 trainSet <- dataSet[trainIndexList[,i],]

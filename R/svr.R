@@ -1,5 +1,5 @@
-#' Main function to calculate performance of svm model
-#' @description This function calculates performance of svm model through iterations
+#' Main function to calculate performance of svr model
+#' @description This function calculates performance of svr model through iterations
 #' and returns performance metrics.In each iteration different partitioning is done
 #' on dataset to create training and validation datasets, cross-validation tuning is
 #' done on training dataset to find optimum cost,gamma, epsilon values
@@ -9,7 +9,7 @@
 #' pretreatment: data pretreatment method (auto-scale, mean-center or range-scale
 #' is supported)
 #' percentageForTrainingSet: percentage of samples in training dataset
-#' kernel: svm kernel methods as radial or polynomial
+#' kernel: svr kernel methods as radial or polynomial
 #' dataSet: dataFrame which is read from data file and subjected to the model.
 #' @return a list containing performance results
 #' RMSEList: a list which contains RMSE of each iteration
@@ -24,10 +24,10 @@
 #' @import caret foreach e1071
 #'
 #' @examples
-#' \dontrun{svm.run(regressionParameterList)}
+#' \dontrun{svr.run(regressionParameterList)}
 
-svm.run <- function(regressionParameterList){
-        cat('svm.run \n')
+svr.run <- function(regressionParameterList){
+        cat('svr.run \n')
 
         preProcValues <- preProcess(regressionParameterList$dataSet, method = gePretreatmentVector(regressionParameterList$pretreatment))
         regressionParameterList$dataSet <- predict(preProcValues, regressionParameterList$dataSet)
@@ -40,8 +40,7 @@ svm.run <- function(regressionParameterList){
 
         performanceResults <- vector(mode="list", length = regressionParameterList$numberOfIterations)
 
-        # do things in parallel
-       # svmModelList <- foreach(i=seq(1:regressionParameterList$numberOfIterations), .inorder=FALSE) %dopar% {
+
         for(i in 1:regressionParameterList$numberOfIterations) {
                 # training set and test set are created
                 trainSet <- dataSet[trainIndexList[,i],]
@@ -60,20 +59,20 @@ svm.run <- function(regressionParameterList){
                                         "epsilon" = tuningResult$best.parameters["epsilon"][1,1])
 
 
-                # svm model is created with the best hyperparameters for the current iteration
+                # svr model is created with the best hyperparameters for the current iteration
                 modelFit <- svm(trainSet, trainSet$TVC, type="eps-regression",
                                 kernel=regressionParameterList$kernel, cost=bestHyperParams$cost, gamma =bestHyperParams$gamma,
                                 epsilon =bestHyperParams$epsilon)
 
-                # Using testSet svm model predicts TVC values
+                # Using testSet svr model predicts TVC values
                 predictedValues <- predict(modelFit , testSet)
 
                 # Performance metrics (RMSE and RSquare) are calculated by comparing the predicted and actual values
                 RMSE<- RMSE(testSet$TVC, predictedValues)
                 RSquare <- RSQUARE(testSet$TVC, predictedValues)
 
-                # svm model with the performance metrics for the current iteration is appended to the svm model list
-                # svm model list contains all svm models for all iterations
+                # svr model with the performance metrics for the current iteration is appended to the svr model list
+                # svr model list contains all svr models for all iterations
                 performanceResults[[i]] <- list( "RMSE" = RMSE, "RSquare" = RSquare, "bestHyperParams" = bestHyperParams)
         }
 
