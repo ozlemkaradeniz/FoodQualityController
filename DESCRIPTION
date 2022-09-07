@@ -1,12 +1,38 @@
 Package: FoodQualityController
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
-Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+Title: Food Quality Controller
+Version: 1.0.0
+Authors@R:  c(person("Ozlem", "Karadeniz", , "ozlem.karadeniz.283@cranfield.ac.uk", role = "cre"))
+Description: A user-friendly and flexible standalone R package named FoodQualityController which is able to run 
+        many machine learning models on datasets produced by different analytical problems. FoodQualityController 
+        will not work specifically  on any data platform and food product, so it is flexible to be used in other 
+        applications. Moreover, users will be able to configure the ML models and their parameters as well as data files. 
+License: MIT + file LICENSE
+URL: https://github.com/ozlemkaradeniz/FoodQualityController
+BugReports: https://github.com/ozlemkaradeniz/FoodQualityController/issues
+Imports: 
+        Boruta,
+        DiagrammeR, 
+        R.utils, 
+        caret,
+        colorRamps,
+        configr,
+        corrplot,
+        doParallel, 
+        dplyr,
+        e1071,
+        foreach,
+        ggplot2,
+        glmnet, 
+        gplots,
+        neuralnet, 
+        openxlsx, 
+        pls, 
+        plyr,
+        randomForest, 
+        rpart, 
+        shape, 
+        viridis, 
+        xgboost
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.2

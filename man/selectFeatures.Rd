@@ -17,7 +17,6 @@ reduces the number of features in the dataset
 by selecting the more important fautures
 }
 \examples{
-new dataset with reduced number of features
 \dontrun{selectFeatures(dataSet)}
 }
 \author{
