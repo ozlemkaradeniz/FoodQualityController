@@ -27,14 +27,13 @@
 
 randomForest.run <- function(regressionParameterList){
         cat('randomForest.run \n')
+        cat(regressionParameterList$pretreatment, '\n')
 
+        preProcValues <- preProcess(regressionParameterList$dataSet, method = gePretreatmentVector(regressionParameterList$pretreatment))
+        regressionParameterList$dataSet <- predict(preProcValues, regressionParameterList$dataSet)
         dataSet <- regressionParameterList$dataSet
 
         performanceResults <- vector(mode="list", length = regressionParameterList$numberOfIterations)
-
-        # pretreatment method is overriden to no_pretreatment in case it has been set by user
-        # there is no need for data pretreatment  before randomForest
-        regressionParameterList$pretreatment = "no_pretreatment"
 
         set.seed(1821)
         # Partition data into training and test set
