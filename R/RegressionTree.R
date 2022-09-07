@@ -70,11 +70,13 @@ pruneTree <-function(modelTree, testSet) {
 #'
 regressionTree.run <- function(regressionParameterList){
 
-        dataSet <- regressionParameterList$dataSet
-
+        cat('regressionTree.run \n')
+        cat(regressionParameterList$pretreatment, '\n')
         # pretreatment method is overriden to no_pretreatment in case it has been set by user
         # there is no need for data pretreatment  before regression tree
-        regressionParameterList$pretreatment = "no_pretreatment"
+        preProcValues <- preProcess(regressionParameterList$dataSet, method = gePretreatmentVector(regressionParameterList$pretreatment))
+        regressionParameterList$dataSet <- predict(preProcValues, regressionParameterList$dataSet)
+        dataSet <- regressionParameterList$dataSet
 
         set.seed(1821)
         trainIndexList <- createDataPartition(dataSet$TVC, p = regressionParameterList$percentageForTrainingSet,
