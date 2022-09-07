@@ -286,7 +286,7 @@ createPerformanceStatistics <- function(performanceResults, regressionParameterL
 #' @import Boruta
 #' @return dataFrame
 #'
-#' @examples new dataset with reduced number of features
+#' @examples
 #' \dontrun{selectFeatures(dataSet)}
 
 selectFeatures<-function(dataSet){
@@ -301,35 +301,4 @@ selectFeatures<-function(dataSet){
         return(boruta_signif)
 }
 
-#' removeRedundantFeatures
-#' @description reduces the number of features in the dataset by
-#' removing the reduntant during the variable selection process of data modeling.
-#' @author Ozlem Karadeniz \email{ozlem.karadeniz.283@@cranfield.ac.uk}
-#' @param  dataSet  dataFrame object
-#' @import caret corrplot plyr
-#' @return
-#'
-#' @examples new dataset with reduced number of features
-#' \dontrun{removeRedundantFeatures(selectFeatures)}
-
-removeRedundantFeatures<-function(dataSet){
-
-
-        #remove non-informative  features
-        nzv <- caret::nearZeroVar(dataSet, saveMetrics= TRUE)
-        dataSet <- dataSet[, !nzv$nzv]
-
-        #Calculate correlation matrix
-        descrCor <- cor(dataSet)
-
-        #finds higly correlated features
-        highlyCorrelated <- findCorrelation(descrCor, cutoff=0.7)
-        highlyCorCol <- colnames(dataSet)[highlyCorrelated]
-
-        #removes highly correlated features
-        dat <- dataSet[, -which(colnames(dataSet) %in% highlyCorCol)]
-
-        return(dat)
-
-}
 
